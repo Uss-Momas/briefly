@@ -5,12 +5,14 @@ import './index.css'
 import Login from './pages/Login/Login.jsx'
 import Signup from './pages/Signup/Signup.jsx'
 import ShortlinkAnonimous from './pages/ShortlinkAnonimous/ShortlinkAnonimous.jsx'
+import ShortLink from './pages/ShortLink/ShortLink.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     {/* <App /> */}
+    {/* <ShortlinkAnonimous /> */}
     {/* <Login /> */}
-    <ShortlinkAnonimous />
     {/* <Signup /> */}
+    <ShortLink />
   </StrictMode>,
 )
