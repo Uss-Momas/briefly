@@ -1,3 +1,4 @@
+import fastifyCors from '@fastify/cors';
 import fastify, { FastifyReply, FastifyRequest } from 'fastify'
 import routes from './routes/main.routes';
 import { ZodError } from 'zod';
@@ -5,6 +6,9 @@ import AppError from './errors/AppError';
 
 const server = fastify();
 
+server.register(fastifyCors, {
+    origin: '*',
+})
 
 server.register(routes, { prefix: '/api/v1' });
 
