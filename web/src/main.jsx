@@ -10,9 +10,9 @@ import ShortLink from './pages/ShortLink/ShortLink.jsx'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     {/* <App /> */}
-    {/* <ShortlinkAnonimous /> */}
+    <ShortlinkAnonimous />
     {/* <Login /> */}
     {/* <Signup /> */}
-    <ShortLink />
+    {/* <ShortLink /> */}
   </StrictMode>,
 )
