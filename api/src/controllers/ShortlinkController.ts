@@ -6,7 +6,7 @@ class ShortlinkController {
     async createShortlink(request: FastifyRequest, reply: FastifyReply) {
         const { originalUrl, code } = shortlinkRequestBodySchema.parse(request.body);
         const shortlink = await shortlinkRepository.createShortlink({ originalUrl, code: code ? code : 'asdasd' });
-        return reply.send({ message: 'Shortlink URL created with success', shortlink });
+        return reply.status(201).send({ message: 'Shortlink URL created with success', shortlink });
     }
 }
 
