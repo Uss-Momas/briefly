@@ -4,6 +4,12 @@ import shortlinkRepository from "../repositories/ShortlinkRepository";
 import { generateRandomCodeV2 } from "../utils/generateCode";
 
 class ShortlinkController {
+
+    async getAllShortlinks(request: FastifyRequest, reply: FastifyReply) {
+        const shortlinks = await shortlinkRepository.getAllShortlinks();
+        return reply.send({ message: 'All Shortlinks', data: shortlinks });
+    }
+
     async createShortlink(request: FastifyRequest, reply: FastifyReply) {
         const { originalUrl, code } = shortlinkRequestBodySchema.parse(request.body);
         const shortlink = await shortlinkRepository.createShortlink({ originalUrl, code: code ? code : await generateRandomCodeV2(6) });

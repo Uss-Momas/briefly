@@ -8,6 +8,11 @@ interface ShortlinkRequestBody {
 
 
 class ShortlinkRepository {
+    async getAllShortlinks() {
+        const shortlinks = await prismaClient.shortLink.findMany();
+        return shortlinks;
+    }
+
     async createShortlink({ originalUrl, code }: ShortlinkRequestBody) {
         const shortlink = await this.getShortlinkByCode(code);
         if (shortlink) throw new AppError(400, 'Code already in use!');
