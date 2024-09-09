@@ -12,3 +12,13 @@ datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
+
+model ShortLink {
+  id          String   @id @default(uuid())
+  originalUrl String   @map("original_url")
+  code        String   @unique
+  createdAt   DateTime @map("created_at") @default(now())
+  updatedAt   DateTime @map("updated_at") @default(now())
+
+  @@map("shortlinks")
+}
