@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
 
-import { Copy } from "lucide-react";
+import { Copy, CopyCheck } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -17,11 +17,12 @@ const schema = z.object({
 });
 
 export default function ShortlinkAnonimous(params) {
-    const { register, handleSubmit, setError, formState: { errors, isSubmitting, isSubmitSuccessful } } = useForm({
+    const { register, handleSubmit, reset, setError, formState: { errors, isSubmitting, isSubmitSuccessful } } = useForm({
         resolver: zodResolver(schema),
     });
 
     const [shortenedCode, setShortenedCode] = useState('');
+    const [isCopied, setIsCopied] = useState(false);
 
     async function OnSubmit(data) {
         try {
@@ -36,12 +37,24 @@ export default function ShortlinkAnonimous(params) {
             const responseData = response.data;
             console.log(responseData);
             setShortenedCode(`http://localhost:3333/${responseData.shortlink.code}`);
-
+            // reset();
         } catch (error) {
             setError("root", {
                 message: 'Some Error',
             })
         }
+    }
+
+    async function copyToClipboard(text) {
+        return await navigator.clipboard.writeText(text);
+    }
+
+    async function handleCopyClick() {
+        await copyToClipboard(shortenedCode);
+        setIsCopied(true);
+        setTimeout(() => {
+            setIsCopied(false);
+        }, 1500);
     }
 
     return (
@@ -70,7 +83,12 @@ export default function ShortlinkAnonimous(params) {
                         <div className='flex flex-row border border-purple-600 rounded p-2 items-center'>
                             <input className='basis-4/5 disabled:bg-white disabled:text-zinc-500' type="text" disabled placeholder="your shortened url here..." value={shortenedCode} />
 
-                            <button><Copy className="border-zinc-700 basis-1/5" /></button>
+                            <button onClick={async () => { handleCopyClick(); }}>
+                                {isCopied ? <CopyCheck className="text-zinc-600 basis-1/5" /> : (
+                                    <Copy className="text-zinc-600 basis-1/5" />
+                                )
+                                }
+                            </button>
                             {/* <span className='basis-1/5'>copy</span> */}
                         </div>
                     </div>
