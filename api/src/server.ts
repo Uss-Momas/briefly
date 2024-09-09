@@ -1,6 +1,7 @@
 import fastify, { FastifyReply, FastifyRequest } from 'fastify'
 import routes from './routes/main.routes';
 import { ZodError } from 'zod';
+import AppError from './errors/AppError';
 
 const server = fastify();
 
@@ -8,6 +9,9 @@ const server = fastify();
 server.register(routes, { prefix: '/api/v1' });
 
 server.setErrorHandler(async (error: Error, request: FastifyRequest, reply: FastifyReply) => {
+    if (error instanceof AppError) {
+        return reply.status(error.statusCode).send({ message: error.message });
+    }
     if (error instanceof ZodError) {
         const messages = error.errors.map((e) => {
             return { field: e.path[0], message: e.message };
