@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import userRepository from "../repositories/UserRepository";
-import { idRequestParamSchema } from "../validations/requests";
+import { idRequestParamSchema, userBodyRequestSchema } from "../validations/requests";
 import AppError from "../errors/AppError";
 
 class UserController {
@@ -28,6 +28,18 @@ class UserController {
         await userRepository.deleteUserById(id);
 
         return reply.send({ message: 'User deleted sucessfuly', user });
+    }
+
+    async createUser(request: FastifyRequest, reply: FastifyReply) {
+        const { name, email, password, roleCode } = userBodyRequestSchema.parse(request.body);
+
+        const user = await userRepository.getUserByEmail(email);
+
+        if (user) throw new AppError(409, 'This email is already in use');
+
+        const newUser = await userRepository.createUser({ name, email, password, roleCode });
+
+        return reply.status(201).send({ message: 'User created sucessfuly', user: newUser });
     }
 }
 
