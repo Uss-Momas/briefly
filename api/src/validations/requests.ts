@@ -8,3 +8,7 @@ export const shortlinkRequestBodySchema = z.object({
 export const shortlinkRequestParamSchema = z.object({
     id: z.string().uuid({ message: 'Must be a UUID type' }),
 });
+
+export const idRequestParamSchema = z.object({
+    id: z.string().uuid({ message: 'Must be a UUID type' }),
+});
