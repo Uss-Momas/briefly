@@ -18,6 +18,17 @@ class UserController {
 
         return reply.send({ message: 'Here is user', user });
     }
+    async deleteUser(request: FastifyRequest, reply: FastifyReply) {
+        const { id } = idRequestParamSchema.parse(request.params);
+
+        const user = await userRepository.getUserById(id);
+
+        if (!user) throw new AppError(404, 'User Not found');
+
+        await userRepository.deleteUserById(id);
+
+        return reply.send({ message: 'User deleted sucessfuly', user });
+    }
 }
 
 const userController = new UserController();
