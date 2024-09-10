@@ -24,7 +24,7 @@ export const userBodyRequestSchema = z.object({
 
 // Auth validations
 export const authSignupRequestBodySchema = z.object({
-    name: z.string().min(3).max(255),
-    email: z.string().email({ message: 'Email is not valid!' }),
-    password: z.string().min(6),
-});
+    name: z.string({ message: "Name is required" }).min(3).max(255),
+    email: z.string({ message: "Email is required" }).email({ message: 'Email is not valid!' }),
+    password: z.string({ message: "Password is required" }).min(6),
+}, { message: '{Name, Email, Password} is required' });
