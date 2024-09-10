@@ -14,7 +14,7 @@ class ShortlinkController {
     async getShortlink(request: FastifyRequest, reply: FastifyReply) {
         const { id } = shortlinkRequestParamSchema.parse(request.params);
         const shortlink = await shortlinkRepository.getShortlink(id);
-        
+
         if (!shortlink) throw new AppError(404, 'Shortlink not found!');
         return reply.send({ message: 'Shortlink is here', shortlink });
     }
@@ -23,6 +23,13 @@ class ShortlinkController {
         const { originalUrl, code } = shortlinkRequestBodySchema.parse(request.body);
         const shortlink = await shortlinkRepository.createShortlink({ originalUrl, code: code ? code : await generateRandomCodeV2(6) });
         return reply.status(201).send({ message: 'Shortlink URL created with success', shortlink });
+    }
+
+    async deleteShortlink(request: FastifyRequest, reply: FastifyReply) {
+        const { id } = shortlinkRequestParamSchema.parse(request.params);
+        const shortlink = await shortlinkRepository.deleteShortlink(id);
+
+        return reply.send({ message: 'Shortlink deleted', shortlink });
     }
 }
 

@@ -20,6 +20,15 @@ class ShortlinkRepository {
         return shortlink;
     }
 
+    async getShortlinkByCode(code: string) {
+        const shortlink = await prismaClient.shortLink.findFirst({
+            where: {
+                code,
+            }
+        });
+        return shortlink;
+    }
+
     async createShortlink({ originalUrl, code }: ShortlinkRequestBody) {
         const shortlink = await this.getShortlinkByCode(code);
         if (shortlink) throw new AppError(400, 'Code already in use!');
@@ -33,15 +42,12 @@ class ShortlinkRepository {
         return newShortlink;
     }
 
-    async getShortlinkByCode(code: string) {
-        const shortlink = await prismaClient.shortLink.findFirst({
-            where: {
-                code,
-            }
-        });
-        return shortlink;
+    async deleteShortlink(id: string) {
+        const shortlink = await this.getShortlink(id);
+        if (!shortlink) throw new AppError(404, 'Shortlink not found!');
+        const deleted = await prismaClient.shortLink.delete({ where: { id } });
+        return deleted;
     }
-
 }
 
 const shortlinkRepository = new ShortlinkRepository();

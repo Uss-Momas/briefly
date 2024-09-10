@@ -22,6 +22,8 @@ server.setErrorHandler(async (error: Error, request: FastifyRequest, reply: Fast
         });
         return reply.status(422).send({ message: 'Validation Errors!', errors: messages });
     }
+    console.log(error);
+    
     return reply.status(500).send({ message: "Internal Error" });
 });
 
