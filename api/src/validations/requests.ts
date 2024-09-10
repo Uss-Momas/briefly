@@ -21,3 +21,10 @@ export const userBodyRequestSchema = z.object({
     password: z.string().min(6),
     roleCode: z.enum(['01', '02'])
 });
+
+// Auth validations
+export const authSignupRequestBodySchema = z.object({
+    name: z.string().min(3).max(255),
+    email: z.string().email({ message: 'Email is not valid!' }),
+    password: z.string().min(6),
+});
