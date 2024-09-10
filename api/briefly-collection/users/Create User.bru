@@ -1,0 +1,20 @@
+meta {
+  name: Create User
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{API_URL}}/users
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Ussmane",
+    "email": "uss@a.com",
+    "password": "123456",
+    "roleCode": "02"
+  }
+}
