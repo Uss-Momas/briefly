@@ -3,10 +3,15 @@
   "version": "1.0.0",
   "description": "This is the backend API for the briefly application",
   "main": "index.js",
+  "prisma": {
+    "seed": "dotenv -e .env.local -- tsx prisma/seed.ts"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "migrate:postgres": "dotenv -e .env.dev -- npx prisma migrate dev",
     "migrate:sqlite": "dotenv -e .env.local -- npx prisma migrate dev",
+    "seed:postgres": "dotenv -e .env.dev -- npx prisma db seed",
+    "seed:sqlite": "dotenv -e .env.local -- npx prisma db seed",
     "build": "tsc -p tsconfig.json",
     "dev:postgres": "dotenv -e .env.dev -- tsx watch ./src/server.ts",
     "dev:sqlite": "dotenv -e .env.local -- tsx watch ./src/server.ts"
