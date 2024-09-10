@@ -27,7 +27,7 @@ class UserRepository {
     }
 
     async getUserByEmail(email: string) {
-        const user = await prismaClient.user.findUnique({ where: { email }, select: { id: true, name: true, email: true, role: true } });
+        const user = await prismaClient.user.findUnique({ where: { email }, select: { id: true, name: true, email: true, role: true, password: true } });
         return user;
     }
 

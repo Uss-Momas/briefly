@@ -5,3 +5,7 @@ export default function hashPassword(password: string) {
     const hashedPwd = bcrypt.hashSync(password, salt);
     return hashedPwd;
 }
+
+export function comparePassword(password: string, hashedPwd: string) {
+    return bcrypt.compareSync(password, hashedPwd);
+}

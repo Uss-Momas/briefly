@@ -1,14 +1,18 @@
 import fastifyCors from '@fastify/cors';
 import fastify, { FastifyReply, FastifyRequest } from 'fastify'
+import fastifyJwt, { FastifyJWTOptions } from '@fastify/jwt';
+import * as dotenv from 'dotenv';
 import routes from './routes/main.routes';
 import { ZodError } from 'zod';
 import AppError from './errors/AppError';
+
+dotenv.config();
 
 const server = fastify();
 
 server.register(fastifyCors, {
     origin: '*',
-})
+});
 
 server.register(routes, { prefix: '/api/v1' });
 
@@ -23,7 +27,7 @@ server.setErrorHandler(async (error: Error, request: FastifyRequest, reply: Fast
         return reply.status(422).send({ message: 'Validation Errors!', errors: messages });
     }
     console.log(error);
-    
+
     return reply.status(500).send({ message: "Internal Error" });
 });
 
