@@ -11,8 +11,8 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     {/* <App /> */}
     {/* <ShortlinkAnonimous /> */}
-    {/* <Login /> */}
-    <Signup />
+    <Login />
+    {/* <Signup /> */}
     {/* <ShortLink /> */}
   </StrictMode>,
 )
