@@ -1,0 +1,15 @@
+meta {
+  name: Get all shortlinks
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{API_URL}}/shortlinks
+  body: json
+  auth: none
+}
+
+body:json {
+  {}
+}
