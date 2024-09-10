@@ -13,6 +13,13 @@ class ShortlinkRepository {
         return shortlinks;
     }
 
+    async getShortlink(id: string) {
+        const shortlink = await prismaClient.shortLink.findUnique({
+            where: { id }
+        })
+        return shortlink;
+    }
+
     async createShortlink({ originalUrl, code }: ShortlinkRequestBody) {
         const shortlink = await this.getShortlinkByCode(code);
         if (shortlink) throw new AppError(400, 'Code already in use!');

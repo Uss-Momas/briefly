@@ -1,13 +1,22 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { shortlinkRequestBodySchema } from "../validations/requests";
+import { shortlinkRequestBodySchema, shortlinkRequestParamSchema } from "../validations/requests";
 import shortlinkRepository from "../repositories/ShortlinkRepository";
 import { generateRandomCodeV2 } from "../utils/generateCode";
+import AppError from "../errors/AppError";
 
 class ShortlinkController {
 
     async getAllShortlinks(request: FastifyRequest, reply: FastifyReply) {
         const shortlinks = await shortlinkRepository.getAllShortlinks();
         return reply.send({ message: 'All Shortlinks', data: shortlinks });
+    }
+
+    async getShortlink(request: FastifyRequest, reply: FastifyReply) {
+        const { id } = shortlinkRequestParamSchema.parse(request.params);
+        const shortlink = await shortlinkRepository.getShortlink(id);
+        
+        if (!shortlink) throw new AppError(404, 'Shortlink not found!');
+        return reply.send({ message: 'Shortlink is here', shortlink });
     }
 
     async createShortlink(request: FastifyRequest, reply: FastifyReply) {
