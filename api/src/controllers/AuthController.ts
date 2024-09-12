@@ -29,7 +29,12 @@ class AuthController {
 
         const token = request.jwt.sign(payload,);
 
-        return reply.send({ message: 'Login Successfully', token });
+        return reply.send({ message: 'Login Successfully', token, user :{
+            id: user.id,
+            email: user.email,
+            role: user.role,
+            name: user.name,
+        } });
     }
 }
 

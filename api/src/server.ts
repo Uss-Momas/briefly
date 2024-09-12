@@ -11,7 +11,9 @@ dotenv.config();
 const server = fastify();
 
 server.register(fastifyCors, {
-    origin: '*',
+    origin: ['http://localhost:5173'],
+    credentials: true,
+    // optionsSuccessStatus: 200,
 });
 
 server.register(routes, { prefix: '/api/v1' });
