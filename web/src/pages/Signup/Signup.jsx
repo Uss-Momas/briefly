@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from 'zod';
-import axios from "axios";
+import axios from "../../api/axios";
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
 
@@ -22,7 +22,7 @@ const schema = z.object({
 });
 
 export default function Signup() {
-    const { register, handleSubmit, clearErrors, setError, formState: { errors, isSubmitting, isSubmitSuccessful } } = useForm({ resolver: zodResolver(schema) });
+    const { register, handleSubmit, clearErrors, setError, reset, formState: { errors, isSubmitting, isSubmitSuccessful, isValid } } = useForm({ resolver: zodResolver(schema) });
 
     async function OnSubmit(data) {
         try {
@@ -31,9 +31,14 @@ export default function Signup() {
             });
             delete data.confirmPassword;
             const response = await axios.post(
-                'http://localhost:3333/api/v1/auth/signup',
-                data,
+                '/auth/signup',
+                data, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true,
+            }
             );
+            console.log(response);
+            reset();
         } catch (error) {
             const { errors = [], message } = error.response.data;
             const messages = errors.map((error) => error.message);
@@ -85,7 +90,7 @@ export default function Signup() {
                             <label htmlFor="avatar">Avatar</label>
                             <input type="file" {...register("avatar")} id="avatar" className="border border-blue-500 rounded px-2 py-1" />
                         </div>
-                        <button type="submit" className="bg-blue-600 transition-colors hover:bg-blue-800 rounded text-white py-2 mt-3">{
+                        <button type="submit" className="bg-blue-600 transition-colors hover:bg-blue-800 disabled:bg-zinc-600 rounded text-white py-2 mt-3" disabled={!isValid}>{
                             isSubmitting ? "Signing Up..." : "Signup"
                         }
                         </button>

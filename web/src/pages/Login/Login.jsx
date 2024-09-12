@@ -1,9 +1,12 @@
 import { useForm } from "react-hook-form";
+import { useContext } from "react";
 import { z } from 'zod';
+import AuthContext from "@/context/AuthProvider";
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
+import axios from "@/api/axios";
+import useAuth from "@/hooks/useAuth";
 
 const loginSchema = z.object({
     email: z.string().email({ message: "Email must contain @" }),
@@ -15,22 +18,40 @@ export default function Login(params) {
         resolver: zodResolver(loginSchema),
     });
 
+    // const { setAuth } = useContext(AuthContext);
+    const { setAuth } = useAuth();
+
     async function OnSubmit(formData) {
         try {
-            const response = await axios.post('http://localhost:3333/api/v1/auth/login', formData);
-            const { message, token } = response.data;
+            const response = await axios.post('/auth/login', formData, {
+                headers: { "Content-Type": 'application/json' },
+                withCredentials: true
+            });
+            const { message, token, user } = response.data;
             console.log(message);
             console.log(token);
+            console.log(user);
+
+            setAuth({ user, token });
             localStorage.setItem('token', token);
         } catch (error) {
-            console.log(error.response.data);
-            const { errors = [], message } = error.response.data;
-            const messages = errors.map((error) => `${error.message}`);
-            setError('root', {
-                message: [message, ...messages]
-            });
+            if (!error.response) {
+                setError('root', {
+                    message: ["No Server Response"]
+                });
 
-            setTimeout(() => { clearErrors() }, 2000);
+                setTimeout(() => { clearErrors() }, 2000);
+            } else {
+
+                console.log(error.response.data);
+                const { errors = [], message } = error.response.data;
+                const messages = errors.map((error) => `${error.message}`);
+                setError('root', {
+                    message: [message, ...messages]
+                });
+
+                setTimeout(() => { clearErrors() }, 2000);
+            }
         }
     }
 
