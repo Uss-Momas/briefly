@@ -19,9 +19,18 @@ class ShortlinkController {
         return reply.send({ message: 'Shortlink is here', shortlink });
     }
 
-    async createShortlink(request: FastifyRequest, reply: FastifyReply) {
+    async createShortlinkByAnominous(request: FastifyRequest, reply: FastifyReply) {
+        console.log('Anonimous LInk');
+        
         const { originalUrl, code } = shortlinkRequestBodySchema.parse(request.body);
         const shortlink = await shortlinkRepository.createShortlink({ originalUrl, code: code ? code : await generateRandomCodeV2(6) });
+        return reply.status(201).send({ message: 'Shortlink URL created with success', shortlink });
+    }
+
+    async createShortlink(request: FastifyRequest, reply: FastifyReply) {
+        const { originalUrl, code } = shortlinkRequestBodySchema.parse(request.body);
+        const user: any = request.user;
+        const shortlink = await shortlinkRepository.createShortlink({ originalUrl, code: code ? code : await generateRandomCodeV2(6),  userId: user.id });
         return reply.status(201).send({ message: 'Shortlink URL created with success', shortlink });
     }
 

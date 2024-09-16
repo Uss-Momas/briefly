@@ -1,9 +1,11 @@
 import AppError from "../errors/AppError";
 import prismaClient from "../utils/prismaClient";
+import userRepository from "./UserRepository";
 
 interface ShortlinkRequestBody {
     code: string;
     originalUrl: string;
+    userId?: string;
 }
 
 
@@ -29,13 +31,18 @@ class ShortlinkRepository {
         return shortlink;
     }
 
-    async createShortlink({ originalUrl, code }: ShortlinkRequestBody) {
+    async createShortlink({ originalUrl, code, userId }: ShortlinkRequestBody) {
         const shortlink = await this.getShortlinkByCode(code);
         if (shortlink) throw new AppError(400, 'Code already in use!');
+        if (userId) {
+            const user = await userRepository.getUserById(userId);
+            if (!user) throw new AppError(404, 'User Not Found!');
+        }
         const newShortlink = await prismaClient.shortLink.create({
             data: {
                 originalUrl,
                 code,
+                userId,
             }
         });
 

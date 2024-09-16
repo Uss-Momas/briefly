@@ -7,6 +7,7 @@ import { useState } from "react";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import axios from "@/api/axios";
+import useAuth from "@/hooks/useAuth";
 
 
 const schema = z.object({
@@ -16,6 +17,12 @@ const schema = z.object({
 });
 
 export default function ShortLink() {
+    const {auth, loading} = useAuth();
+
+    if (loading) {
+        return (<></>);
+    }
+
     const { register, handleSubmit, reset, setError, formState: { errors, isSubmitting, isSubmitSuccessful } } = useForm({
         resolver: zodResolver(schema),
     });
@@ -27,10 +34,14 @@ export default function ShortLink() {
             console.log(data);
             const response = await axios({
                 method: 'post',
-                url: 'http://127.0.0.1:3333/api/v1/shortlinks',
+                url: '/shortlinks',
                 data: {
                     originalUrl: data.url,
                 },
+                headers: {
+                    Authorization: `Bearer ${auth.token}`,
+                    "Content-Type": 'application/json',
+                }
             });
             const responseData = response.data;
             console.log(responseData);

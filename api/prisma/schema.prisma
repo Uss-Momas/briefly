@@ -17,8 +17,11 @@ model ShortLink {
   id          String   @id @default(uuid())
   originalUrl String   @map("original_url")
   code        String   @unique
+  userId      String?  @map("user_id")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+
+  user User? @relation(fields: [userId], references: [id])
 
   @@map("shortlinks")
 }
@@ -29,12 +32,15 @@ model User {
   name      String
   email     String   @unique
   password  String
-  avatarUrl String?   @map("avatar_url")
+  avatarUrl String?  @map("avatar_url")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   //relation 1:1 with roles
   role Role @relation(fields: [roleCode], references: [code])
+
+  // Relation between user and shortlinks
+  shortlinks ShortLink[]
 
   @@map("users")
 }

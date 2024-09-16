@@ -1,4 +1,3 @@
-import axios from "axios";
 import classNames from 'classnames';
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
@@ -8,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import axios from '@/api/axios';
 
 
 const schema = z.object({
@@ -26,10 +26,9 @@ export default function ShortlinkAnonimous(params) {
 
     async function OnSubmit(data) {
         try {
-            console.log(data);
             const response = await axios({
                 method: 'post',
-                url: 'http://127.0.0.1:3333/api/v1/shortlinks',
+                url: '/shortlinks/anonimous',
                 data: {
                     originalUrl: data.url,
                 },

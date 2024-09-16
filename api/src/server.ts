@@ -1,6 +1,5 @@
 import fastifyCors from '@fastify/cors';
-import fastify, { FastifyReply, FastifyRequest } from 'fastify'
-import fastifyJwt, { FastifyJWTOptions } from '@fastify/jwt';
+import fastify, { FastifyReply, FastifyRequest } from 'fastify';
 import * as dotenv from 'dotenv';
 import routes from './routes/main.routes';
 import { ZodError } from 'zod';
@@ -8,7 +7,7 @@ import AppError from './errors/AppError';
 
 dotenv.config();
 
-const server = fastify();
+const server = fastify({logger: true});
 
 server.register(fastifyCors, {
     origin: ['http://localhost:5173'],
