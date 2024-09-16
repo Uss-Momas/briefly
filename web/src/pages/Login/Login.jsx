@@ -19,7 +19,7 @@ export default function Login(params) {
     });
 
     // const { setAuth } = useContext(AuthContext);
-    const { setAuth } = useAuth();
+    const { addLoginData } = useAuth();
 
     async function OnSubmit(formData) {
         try {
@@ -32,8 +32,8 @@ export default function Login(params) {
             console.log(token);
             console.log(user);
 
-            setAuth({ user, token });
-            localStorage.setItem('token', token);
+            addLoginData({ user, token });
+            
         } catch (error) {
             if (!error.response) {
                 setError('root', {
