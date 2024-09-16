@@ -24,13 +24,10 @@ export default function Login(params) {
     async function OnSubmit(formData) {
         try {
             const response = await axios.post('/auth/login', formData, {
-                headers: { "Content-Type": 'application/json' },
+                headers: { "Content-Tyspe": 'application/json' },
                 withCredentials: true
             });
             const { message, token, user } = response.data;
-            console.log(message);
-            console.log(token);
-            console.log(user);
 
             addLoginData({ user, token });
             
@@ -56,7 +53,7 @@ export default function Login(params) {
     }
 
     return (
-        <div className='flex flex-col h-screen'>
+        <div className='flex flex-col min-h-screen'>
             <Header />
             <main className="m-auto">
                 <form className="bg-white flex flex-col gap-5 rounded px-6 py-8 h-auto w-96" onSubmit={handleSubmit(OnSubmit)}>

@@ -1,61 +1,135 @@
-import { TableDemo } from "@/components/Table/Table";
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-export default function ShortLink(params) {
+import { Copy, CopyCheck, Trash2 } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import axios from "@/api/axios";
+
+
+const schema = z.object({
+    url: z.string().url({
+        message: 'Url is not valid',
+    }),
+});
+
+export default function ShortLink() {
+    const { register, handleSubmit, reset, setError, formState: { errors, isSubmitting, isSubmitSuccessful } } = useForm({
+        resolver: zodResolver(schema),
+    });
+    const [shortenedCode, setShortenedCode] = useState('');
+    const [isCopied, setIsCopied] = useState(false);
+
+    async function OnSubmit(data) {
+        try {
+            console.log(data);
+            const response = await axios({
+                method: 'post',
+                url: 'http://127.0.0.1:3333/api/v1/shortlinks',
+                data: {
+                    originalUrl: data.url,
+                },
+            });
+            const responseData = response.data;
+            console.log(responseData);
+            setShortenedCode(`http://localhost:3333/${responseData.shortlink.code}`);
+            // reset();
+        } catch (error) {
+            setError("root", {
+                message: 'Some Error',
+            })
+        }
+    }
+
+    async function copyToClipboard(text) {
+        return await navigator.clipboard.writeText(text);
+    }
+
+    async function handleCopyClick() {
+        await copyToClipboard(shortenedCode);
+        setIsCopied(true);
+        setTimeout(() => {
+            setIsCopied(false);
+        }, 1500);
+    }
     return (
-        <div className='flex flex-col h-screen'>
+        <div className='flex flex-col min-h-screen'>
             <Header />
-            <main className="m-auto">
-                <div className="flex w-auto bg-white p-6">
-                    <div></div>
-                    <div className="border rounded-lg">
-                        {/* <table className="border w-full divide-y divide-gray-500">
-                            <thead>
+            <main className="flex flex-grow justify-center items-center">
+                <div className="flex flex-col w-full max-w-5xl bg-white p-8 shadow-lg rounded-lg mt-4 mb-4">
+                    <div className='flex flex-col gap-5 w-full rounded-xl mt-5 bg-white shadow-sm'>
+                        <h1 className='font-semibold text-2xl text-gray-700'>Paste your link here to be shortened</h1>
+                        <div>
+                            <form className='flex flex-row items-center gap-4' onSubmit={handleSubmit(OnSubmit)}>
+                                <input {...register("url")} type="text" className='flex-grow border rounded-lg p-3 w-full border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-700 transition-all' placeholder="http://example.com" />
+                                <button disabled={isSubmitting} className='flex-shrink-0 rounded-full p-3 bg-blue-600 text-white hover:bg-blue-700 focus:bg-blue-800 transition-all'>{isSubmitting ? "Submitting..." : "Short Link"}</button>
+                            </form>
+                            {errors.url && (
+                                <span className="text-red-500 mt-1 block">{errors.url.message}</span>
+                            )}
+                        </div>
+                        <div className='flex flex-col gap-2 mt-4'>
+                            <span className="text-gray-500">Here is your shortened link:</span>
+                            <div className='flex flex-row border border-purple-600 rounded-lg p-3 items-center'>
+                                <input
+                                    className='flex-grow disabled:bg-white disabled:text-gray-500 outline-none'
+                                    type="text"
+                                    disabled
+                                    placeholder="your shortened url here..."
+                                    value={shortenedCode}
+                                />
+                                <button onClick={handleCopyClick} className='ml-3'>
+                                    {isCopied ? <CopyCheck className="text-green-600" /> : <Copy className="text-gray-600" />}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="border rounded-lg bg-white shadow-md mt-8 p-6">
+                        <h2 className="text-lg font-semibold text-gray-700 mb-4">Shortened URLs List</h2>
+                        <table className="min-w-full table-auto border-collapse">
+                            <thead className="bg-gray-100">
                                 <tr>
-                                    <th>Original url</th>
-                                    <th>Short url</th>
-                                    <th>Clicks</th>
-                                    <th>Actions</th>
+                                    <th className="text-left px-6 py-3 text-gray-600">Original URL</th>
+                                    <th className="text-left px-6 py-3 text-gray-600">Short URL</th>
+                                    <th className="text-left px-6 py-3 text-gray-600">Clicks</th>
+                                    <th className="text-left px-6 py-3 text-gray-600">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>https://google.com?q=como-ser-rico</td>
-                                    <td>https://briefly.com/sqar21</td>
-                                    <td>100</td>
-                                    <td>
-                                        <span>copy</span>
-                                        <span>delete</span>
+                                <tr className="border-t text-gray-700 text-sm">
+                                    <td className="px-6 py-4 break-all">https://google.com?q=como-ser-rico</td>
+                                    <td className="px-6 py-4 break-all text-blue-600">
+                                        <a href="">https://briefly.com/sqar21</a>
+                                    </td>
+                                    <td className="text-center px-6 py-4">100</td>
+                                    <td className="text-center px-6 py-4 space-x-3">
+                                        <button className="text-blue-600 hover:text-blue-800 transition-colors border-none">
+                                            {<Copy />}
+                                        </button>
+                                        <button className="text-red-600 hover:text-red-800 transition-colors border-none">
+                                            <Trash2 />
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr className="border-t text-gray-700 text-sm">
+                                    <td className="px-6 py-4 break-all">https://google.com?q=como-ser-rico</td>
+                                    <td className="px-6 py-4 break-all text-blue-600">
+                                        <a href="">https://briefly.com/sqar21</a>
+                                    </td>
+                                    <td className="text-center px-6 py-4">100</td>
+                                    <td className="text-center px-6 py-4 space-x-3">
+                                        <button className="text-blue-600 hover:text-blue-800 transition-colors border-none">
+                                            {<Copy />}
+                                        </button>
+                                        <button className="text-red-600 hover:text-red-800 transition-colors border-none">
+                                            <Trash2 />
+                                        </button>
                                     </td>
                                 </tr>
                             </tbody>
-                        </table> */}
-                        <Table>
-                            <TableHeader>
-                                <TableHead>Original url</TableHead>
-                                <TableHead>Short url</TableHead>
-                                <TableHead>Clicks</TableHead>
-                                <TableHead>Actions</TableHead>
-                            </TableHeader>
-                            <TableBody>
-                                {Array.from({ length: 10 }).map((_, i) => {
-                                    return (
-                                        <TableRow key={i}>
-                                            <TableCell>https://google.com?q=como-ser-rico</TableCell>
-                                            <TableCell>https://briefly.com/sqar21</TableCell>
-                                            <TableCell>100</TableCell>
-                                            <TableCell>
-                                                <span>copy</span>
-                                                <span>delete</span>
-                                            </TableCell>
-
-                                        </TableRow>
-                                    );
-                                })}
-                            </TableBody>
-                        </Table>
+                        </table>
                     </div>
                 </div>
             </main>

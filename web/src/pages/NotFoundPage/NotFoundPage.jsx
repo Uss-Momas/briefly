@@ -8,7 +8,6 @@ export default function NotFoundPage() {
         <div className="w-dvw h-dvh flex flex-col items-center justify-center text-center font-bold text-2xl">
             404 Not Found
             <Link to={'/'}>Home</Link>
-            <p className="font-normal">Link Code{params.code}</p>
         </div>
     );
 }
