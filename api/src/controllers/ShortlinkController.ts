@@ -9,7 +9,7 @@ class ShortlinkController {
     async getAllShortlinks(request: FastifyRequest, reply: FastifyReply) {
         const { page = 1, limit = 5 } = paginationQuerySchema.parse(request.query);
         const { shortlinks, meta } = await shortlinkRepository.getAllShortlinks({ page, limit });
-        return reply.send({ message: 'All Shortlinks', data: shortlinks, meta });
+        return reply.send({ message: 'All Shortlinks', shortlinks, meta });
     }
 
     async getShortlink(request: FastifyRequest, reply: FastifyReply) {
