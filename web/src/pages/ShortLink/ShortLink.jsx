@@ -3,11 +3,12 @@ import Header from "../../components/Header/Header";
 
 import { Copy, CopyCheck, Trash2 } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import axios from "@/api/axios";
 import useAuth from "@/hooks/useAuth";
+import Pagination from "@/components/Pagination/Pagination";
 
 
 const schema = z.object({
@@ -17,7 +18,7 @@ const schema = z.object({
 });
 
 export default function ShortLink() {
-    const {auth, loading} = useAuth();
+    const { auth, loading } = useAuth();
 
     if (loading) {
         return (<></>);
@@ -28,6 +29,26 @@ export default function ShortLink() {
     });
     const [shortenedCode, setShortenedCode] = useState('');
     const [isCopied, setIsCopied] = useState(false);
+    const [shortlinks, setShortlinks] = useState([]);
+    const [paginationMetaData, setPaginationMetaData] = useState({});
+
+    useEffect(() => {
+        getAllLinks();
+    }, []);
+
+    async function getAllLinks() {
+        try {
+            const response = await axios.get("/shortlinks", { headers: { "Content-Type": 'application/json' } });
+            console.log(response.data);
+            const links = response.data.shortlinks;
+            const meta = response.data.meta;
+            setShortlinks(links);
+            setPaginationMetaData(meta)
+        } catch (error) {
+            console.log(error);
+
+        }
+    }
 
     async function OnSubmit(data) {
         try {
@@ -102,10 +123,10 @@ export default function ShortLink() {
                         <table className="min-w-full table-auto border-collapse">
                             <thead className="bg-gray-100">
                                 <tr>
-                                    <th className="text-left px-6 py-3 text-gray-600">Original URL</th>
-                                    <th className="text-left px-6 py-3 text-gray-600">Short URL</th>
-                                    <th className="text-left px-6 py-3 text-gray-600">Clicks</th>
-                                    <th className="text-left px-6 py-3 text-gray-600">Actions</th>
+                                    <th className="text-center px-6 py-3 text-gray-600">Original URL</th>
+                                    <th className="text-center px-6 py-3 text-gray-600">Short URL</th>
+                                    <th className="text-center px-6 py-3 text-gray-600">Clicks</th>
+                                    <th className="text-center px-6 py-3 text-gray-600">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -124,24 +145,31 @@ export default function ShortLink() {
                                         </button>
                                     </td>
                                 </tr>
-                                <tr className="border-t text-gray-700 text-sm">
-                                    <td className="px-6 py-4 break-all">https://google.com?q=como-ser-rico</td>
-                                    <td className="px-6 py-4 break-all text-blue-600">
-                                        <a href="">https://briefly.com/sqar21</a>
-                                    </td>
-                                    <td className="text-center px-6 py-4">100</td>
-                                    <td className="text-center px-6 py-4 space-x-3">
-                                        <button className="text-blue-600 hover:text-blue-800 transition-colors border-none">
-                                            {<Copy />}
-                                        </button>
-                                        <button className="text-red-600 hover:text-red-800 transition-colors border-none">
-                                            <Trash2 />
-                                        </button>
-                                    </td>
-                                </tr>
+                                {
+                                    shortlinks.map((link, idx) => {
+                                        return (
+                                            <tr key={idx} className="border-t text-gray-700 text-sm">
+                                                <td className="px-6 py-4 break-all">{link.originalUrl}</td>
+                                                <td className="px-6 py-4 break-all text-blue-600">
+                                                    <a href="">https://briefly.com/{link.code}</a>
+                                                </td>
+                                                <td className="text-center px-6 py-4">100</td>
+                                                <td className="text-center px-6 py-4 space-x-3">
+                                                    <button className="text-blue-600 hover:text-blue-800 transition-colors border-none">
+                                                        {<Copy />}
+                                                    </button>
+                                                    <button className="text-red-600 hover:text-red-800 transition-colors border-none">
+                                                        <Trash2 />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })
+                                }
                             </tbody>
                         </table>
                     </div>
+                    <Pagination currentPage={paginationMetaData.currentPage} totalPages={paginationMetaData.totalPages}/>
                 </div>
             </main>
             <Footer />
