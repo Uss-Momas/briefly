@@ -9,6 +9,10 @@ export const shortlinkRequestParamSchema = z.object({
     id: z.string().uuid({ message: 'Must be a UUID type' }),
 });
 
+export const shortlinkCodeParamSchema = z.object({
+    code: z.string({message: 'Code must be string'}),
+});
+
 export const paginationQuerySchema = z.object({
     page: z.number({message: 'Page query param must be a number'}).min(1, {message: 'Page must be greater or equal to 1'}).optional(),
     limit: z.number({message: 'Limit query param must be a number'}).min(2, {message: 'Page must be greater or equal to 1'}).optional(),

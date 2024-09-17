@@ -3,6 +3,7 @@ import shortlinkController from "../controllers/ShortlinkController";
 
 export default async function shortlinkRoutes(fastify: FastifyInstance) {
     fastify.post('/anonimous', async (request, reply) => shortlinkController.createShortlinkByAnominous(request, reply));
+    fastify.get('/code/:code', async (request, reply) => shortlinkController.getOriginalUrlByCode(request, reply));
     fastify.get('/', {
         preHandler: async (request, reply) => {
             const { page = 1, limit = 5 }: any = request.query;
@@ -10,7 +11,7 @@ export default async function shortlinkRoutes(fastify: FastifyInstance) {
                 page: parseInt(page, 10),
                 limit: parseInt(limit, 10),
             };
-            
+
             request.query = query;
         },
     }, async (request, reply) => shortlinkController.getAllShortlinks(request, reply));

@@ -20,6 +20,7 @@ export default function ShortlinkAnonimous(params) {
     const { register, handleSubmit, reset, setError, formState: { errors, isSubmitting, isSubmitSuccessful } } = useForm({
         resolver: zodResolver(schema),
     });
+    
 
     const [shortenedCode, setShortenedCode] = useState('');
     const [isCopied, setIsCopied] = useState(false);

@@ -13,6 +13,7 @@ import { AuthProvider } from './context/AuthProvider'
 import LaunchingPage from './pages/LaunchingPage/LaunchingPage.jsx'
 import PrivateRoute from './components/PrivateRoute/PrivateRoute.jsx'
 import ProfilePage from './pages/ProfilePage/ProfilePage.jsx'
+import RedirectLink from './pages/RedirectLink/RedirectLink.jsx'
 
 const router = createBrowserRouter([
   {
@@ -47,6 +48,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path='/shortlink-anonimous'element={<ShortlinkAnonimous />}/>
+          <Route path='/:code' element={<RedirectLink />}/>
 
           {/* Protected Route */}
           <Route

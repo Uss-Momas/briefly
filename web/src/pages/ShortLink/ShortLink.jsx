@@ -151,7 +151,7 @@ export default function ShortLink() {
                                             <tr key={idx} className="border-t text-gray-700 text-sm">
                                                 <td className="px-6 py-4 break-all">{link.originalUrl}</td>
                                                 <td className="px-6 py-4 break-all text-blue-600">
-                                                    <a href="">https://briefly.com/{link.code}</a>
+                                                    <a target="_blank" href={`${window.location.origin}/${link.code}`}>{`${window.location.origin}/${link.code}`}</a>
                                                 </td>
                                                 <td className="text-center px-6 py-4">100</td>
                                                 <td className="text-center px-6 py-4 space-x-3">
