@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { shortlinkRequestBodySchema, shortlinkRequestParamSchema } from "../validations/requests";
+import { paginationQuerySchema, shortlinkRequestBodySchema, shortlinkRequestParamSchema } from "../validations/requests";
 import shortlinkRepository from "../repositories/ShortlinkRepository";
 import { generateRandomCodeV2 } from "../utils/generateCode";
 import AppError from "../errors/AppError";
@@ -7,8 +7,9 @@ import AppError from "../errors/AppError";
 class ShortlinkController {
 
     async getAllShortlinks(request: FastifyRequest, reply: FastifyReply) {
-        const shortlinks = await shortlinkRepository.getAllShortlinks();
-        return reply.send({ message: 'All Shortlinks', data: shortlinks });
+        const { page = 1, limit = 5 } = paginationQuerySchema.parse(request.query);
+        const { shortlinks, meta } = await shortlinkRepository.getAllShortlinks({ page, limit });
+        return reply.send({ message: 'All Shortlinks', data: shortlinks, meta });
     }
 
     async getShortlink(request: FastifyRequest, reply: FastifyReply) {
@@ -21,7 +22,7 @@ class ShortlinkController {
 
     async createShortlinkByAnominous(request: FastifyRequest, reply: FastifyReply) {
         console.log('Anonimous LInk');
-        
+
         const { originalUrl, code } = shortlinkRequestBodySchema.parse(request.body);
         const shortlink = await shortlinkRepository.createShortlink({ originalUrl, code: code ? code : await generateRandomCodeV2(6) });
         return reply.status(201).send({ message: 'Shortlink URL created with success', shortlink });
@@ -30,7 +31,7 @@ class ShortlinkController {
     async createShortlink(request: FastifyRequest, reply: FastifyReply) {
         const { originalUrl, code } = shortlinkRequestBodySchema.parse(request.body);
         const user: any = request.user;
-        const shortlink = await shortlinkRepository.createShortlink({ originalUrl, code: code ? code : await generateRandomCodeV2(6),  userId: user.id });
+        const shortlink = await shortlinkRepository.createShortlink({ originalUrl, code: code ? code : await generateRandomCodeV2(6), userId: user.id });
         return reply.status(201).send({ message: 'Shortlink URL created with success', shortlink });
     }
 

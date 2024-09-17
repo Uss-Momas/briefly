@@ -9,10 +9,30 @@ interface ShortlinkRequestBody {
 }
 
 
+interface PaginationType {
+    page: number;
+    limit: number;
+}
+
+
 class ShortlinkRepository {
-    async getAllShortlinks() {
-        const shortlinks = await prismaClient.shortLink.findMany();
-        return shortlinks;
+    async getAllShortlinks({ page, limit }: PaginationType) {
+        const skip = (page - 1) * limit;
+        const totalLinks = await prismaClient.shortLink.count();
+        const totalPages = Math.ceil(totalLinks / limit);
+        const hasPrevPage = page > 1;
+        const hasNextPage = page < totalPages;
+
+        const shortlinks = await prismaClient.shortLink.findMany({
+            skip, take: limit,
+        });
+        return {shortlinks, meta: {
+            totalItems: totalLinks,
+            totalPages,
+            currentPage: page,
+            prevPage: hasPrevPage ? page - 1 : null,
+            nextPage: hasNextPage ? page + 1 : null,
+        }};
     }
 
     async getShortlink(id: string) {
