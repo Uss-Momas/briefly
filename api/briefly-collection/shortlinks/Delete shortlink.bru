@@ -7,7 +7,11 @@ meta {
 delete {
   url: {{API_URL}}/shortlinks/7a25f650-d61b-404f-9f50-58e1fa14cc7a
   body: json
-  auth: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{ACCESS_TOKEN}}
 }
 
 body:json {
