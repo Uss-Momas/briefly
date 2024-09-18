@@ -14,6 +14,7 @@ import LaunchingPage from './pages/LaunchingPage/LaunchingPage.jsx'
 import PrivateRoute from './components/PrivateRoute/PrivateRoute.jsx'
 import ProfilePage from './pages/ProfilePage/ProfilePage.jsx'
 import RedirectLink from './pages/RedirectLink/RedirectLink.jsx'
+import ResponseInterceptor from './components/ResponseInterceptor/ResponseInterceptor.jsx'
 
 const router = createBrowserRouter([
   {
@@ -43,12 +44,13 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthProvider>
       <BrowserRouter>
+        <ResponseInterceptor />
         <Routes>
           <Route path='/' element={<LaunchingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path='/shortlink-anonimous'element={<ShortlinkAnonimous />}/>
-          <Route path='/:code' element={<RedirectLink />}/>
+          <Route path='/shortlink-anonimous' element={<ShortlinkAnonimous />} />
+          <Route path='/:code' element={<RedirectLink />} />
 
           {/* Protected Route */}
           <Route
