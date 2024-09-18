@@ -10,8 +10,8 @@ dotenv.config();
 const server = fastify({logger: true});
 
 server.register(fastifyCors, {
-    origin: ['http://localhost:5173'],
-    credentials: true,
+    origin: '*',
+    // credentials: true,
     // optionsSuccessStatus: 200,
 });
 
