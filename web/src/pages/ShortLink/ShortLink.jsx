@@ -33,13 +33,14 @@ export default function ShortLink() {
     const [isCopied, setIsCopied] = useState(false);
     const [shortlinks, setShortlinks] = useState([]);
     const [paginationMetaData, setPaginationMetaData] = useState({});
+    const [currentPage, setCurrentPage] = useState(1);
 
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedLink, setSelectedLink] = useState(null);
 
     useEffect(() => {
-        getAllLinks(1);
+        getAllLinks(currentPage);
     }, []);
 
     async function getAllLinks(page = 1) {
@@ -119,6 +120,8 @@ export default function ShortLink() {
             });
             // Remove the deleted link from the shortlinks state
             setShortlinks((prevLinks) => prevLinks.filter((link) => link.id !== selectedLink.id));
+            // setCurrentPage(paginationMetaData.currentPage);
+            // getAllLinks(currentPage);
             handleCloseModal(); // Close the modal after deletion
         } catch (error) {
             console.error("Failed to delete link:", error);
@@ -170,7 +173,7 @@ export default function ShortLink() {
                             </thead>
                             <tbody>
                                 {
-                                    shortlinks.map((link, idx) => {
+                                    shortlinks.length > 0 ? shortlinks.map((link, idx) => {
                                         return (
                                             <tr key={idx} className="border-t text-gray-700 text-sm">
                                                 <td className="px-6 py-4 break-all">{link.originalUrl}</td>
@@ -188,7 +191,11 @@ export default function ShortLink() {
                                                 </td>
                                             </tr>
                                         );
-                                    })
+                                    }) : (<tr>
+                                        <td colSpan="4" className="text-center px-6 py-4 text-gray-500">
+                                            No data available
+                                        </td>
+                                    </tr>)
                                 }
                             </tbody>
                         </table>

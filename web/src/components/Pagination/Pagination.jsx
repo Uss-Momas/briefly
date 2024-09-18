@@ -7,7 +7,10 @@ export default function Pagination({ currentPage, totalPages, onPageChange, clas
 
     const getPageNumbers = () => {
         const pageNumbers = [];
-        pageNumbers.push(1); // Always display the first page
+        console.log(currentPage, totalPages,);
+
+        if (currentPage > 1)
+            pageNumbers.push(1); // Always display the first page
 
         // If currentPage is greater than 3, we show '...'
         if (currentPage > 3) {
@@ -35,47 +38,49 @@ export default function Pagination({ currentPage, totalPages, onPageChange, clas
         }
 
         // Always display the last page
-        pageNumbers.push(totalPages);
+        if (totalPages > 0)
+            pageNumbers.push(totalPages);
 
         return pageNumbers;
     };
 
     return (
-        <div className={className}>
-            <button
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:bg-blue-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-                Previous
-            </button>
+        totalPages > 0 ? (
+            <div className={className}>
+                <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:bg-blue-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    Previous
+                </button>
 
-            {/* Generate page buttons */}
-            {getPageNumbers().map((page, index) =>
-                page === '...' ? (
-                    <span key={index} className="px-3 py-2 text-gray-500">...</span>
-                ) : (
-                    <button
-                        key={index}
-                        onClick={() => handlePageChange(page)}
-                        className={`px-4 py-2 rounded-lg transition-colors ${
-                            currentPage === page
+                {/* Generate page buttons */}
+                {getPageNumbers().map((page, index) =>
+                    page === '...' ? (
+                        <span key={index} className="px-3 py-2 text-gray-500">...</span>
+                    ) : (
+                        <button
+                            key={index}
+                            onClick={() => handlePageChange(page)}
+                            className={`px-4 py-2 rounded-lg transition-colors ${currentPage === page
                                 ? 'bg-blue-600 text-white'
                                 : 'bg-gray-200 text-gray-700 hover:bg-blue-600 hover:text-white'
-                        }`}
-                    >
-                        {page}
-                    </button>
-                )
-            )}
+                                }`}
+                        >
+                            {page}
+                        </button>
+                    )
+                )}
 
-            <button
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:bg-blue-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-                Next
-            </button>
-        </div>
+                <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:bg-blue-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    Next
+                </button>
+            </div>
+        ) : null
     );
 }
