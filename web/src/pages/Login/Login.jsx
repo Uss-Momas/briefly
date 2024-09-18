@@ -25,7 +25,7 @@ export default function Login(params) {
         try {
             const response = await axios.post('/auth/login', formData, {
                 headers: { "Content-Tyspe": 'application/json' },
-                withCredentials: true
+                // withCredentials: true
             });
             const { message, token, user } = response.data;
 

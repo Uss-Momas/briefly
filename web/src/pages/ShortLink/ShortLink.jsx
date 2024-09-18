@@ -33,12 +33,12 @@ export default function ShortLink() {
     const [paginationMetaData, setPaginationMetaData] = useState({});
 
     useEffect(() => {
-        getAllLinks();
+        getAllLinks(1);
     }, []);
 
-    async function getAllLinks() {
+    async function getAllLinks(page = 1) {
         try {
-            const response = await axios.get("/shortlinks", { headers: { "Content-Type": 'application/json' } });
+            const response = await axios.get(`/shortlinks?page=${page}`, { headers: { "Content-Type": 'application/json' } });
             console.log(response.data);
             const links = response.data.shortlinks;
             const meta = response.data.meta;
@@ -73,6 +73,10 @@ export default function ShortLink() {
                 message: 'Some Error',
             })
         }
+    }
+
+    function handlePageChange(page) {
+        getAllLinks(page);
     }
 
     async function copyToClipboard(text) {
@@ -169,7 +173,7 @@ export default function ShortLink() {
                             </tbody>
                         </table>
                     </div>
-                    <Pagination currentPage={paginationMetaData.currentPage} totalPages={paginationMetaData.totalPages}/>
+                    <Pagination className="flex justify-center items-center space-x-2 mt-2" currentPage={paginationMetaData.currentPage} totalPages={paginationMetaData.totalPages} onPageChange={handlePageChange}/>
                 </div>
             </main>
             <Footer />
