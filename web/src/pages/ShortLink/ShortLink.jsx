@@ -9,6 +9,7 @@ import { z } from 'zod';
 import axios from "@/api/axios";
 import useAuth from "@/hooks/useAuth";
 import Pagination from "@/components/Pagination/Pagination";
+import ConfirmationModal from "@/components/ConfirmationModal/ConfirmationModal";
 
 
 const schema = z.object({
@@ -27,10 +28,15 @@ export default function ShortLink() {
     const { register, handleSubmit, reset, setError, formState: { errors, isSubmitting, isSubmitSuccessful } } = useForm({
         resolver: zodResolver(schema),
     });
+
     const [shortenedCode, setShortenedCode] = useState('');
     const [isCopied, setIsCopied] = useState(false);
     const [shortlinks, setShortlinks] = useState([]);
     const [paginationMetaData, setPaginationMetaData] = useState({});
+
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedLink, setSelectedLink] = useState(null);
 
     useEffect(() => {
         getAllLinks(1);
@@ -90,6 +96,35 @@ export default function ShortLink() {
             setIsCopied(false);
         }, 1500);
     }
+
+    // Trigger modal on delete button click
+    const handleDeleteClick = (link) => {
+        setSelectedLink(link); // Set the link to be deleted
+        setIsModalOpen(true);  // Open the modal
+    };
+
+    // Close the modal
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setSelectedLink(null);
+    };
+
+    // Confirm delete
+    const handleConfirmDelete = async () => {
+        try {
+            await axios.delete(`/shortlinks/${selectedLink.id}`, {
+                headers: {
+                    Authorization: `Bearer ${auth.token}`,
+                },
+            });
+            // Remove the deleted link from the shortlinks state
+            setShortlinks((prevLinks) => prevLinks.filter((link) => link.id !== selectedLink.id));
+            handleCloseModal(); // Close the modal after deletion
+        } catch (error) {
+            console.error("Failed to delete link:", error);
+        }
+    };
+
     return (
         <div className='flex flex-col min-h-screen'>
             <Header />
@@ -134,21 +169,6 @@ export default function ShortLink() {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr className="border-t text-gray-700 text-sm">
-                                    <td className="px-6 py-4 break-all">https://google.com?q=como-ser-rico</td>
-                                    <td className="px-6 py-4 break-all text-blue-600">
-                                        <a href="">https://briefly.com/sqar21</a>
-                                    </td>
-                                    <td className="text-center px-6 py-4">100</td>
-                                    <td className="text-center px-6 py-4 space-x-3">
-                                        <button className="text-blue-600 hover:text-blue-800 transition-colors border-none">
-                                            {<Copy />}
-                                        </button>
-                                        <button className="text-red-600 hover:text-red-800 transition-colors border-none">
-                                            <Trash2 />
-                                        </button>
-                                    </td>
-                                </tr>
                                 {
                                     shortlinks.map((link, idx) => {
                                         return (
@@ -162,7 +182,7 @@ export default function ShortLink() {
                                                     <button className="text-blue-600 hover:text-blue-800 transition-colors border-none">
                                                         {<Copy />}
                                                     </button>
-                                                    <button className="text-red-600 hover:text-red-800 transition-colors border-none">
+                                                    <button onClick={() => handleDeleteClick(link)} className="text-red-600 hover:text-red-800 transition-colors border-none">
                                                         <Trash2 />
                                                     </button>
                                                 </td>
@@ -173,7 +193,14 @@ export default function ShortLink() {
                             </tbody>
                         </table>
                     </div>
-                    <Pagination className="flex justify-center items-center space-x-2 mt-2" currentPage={paginationMetaData.currentPage} totalPages={paginationMetaData.totalPages} onPageChange={handlePageChange}/>
+                    <Pagination className="flex justify-center items-center space-x-2 mt-2" currentPage={paginationMetaData.currentPage} totalPages={paginationMetaData.totalPages} onPageChange={handlePageChange} />
+                    {/* Modal */}
+                    <ConfirmationModal
+                        isOpen={isModalOpen}
+                        onClose={handleCloseModal}
+                        onConfirm={handleConfirmDelete}
+                        link={selectedLink} // Pass the selected link to the modal
+                    />
                 </div>
             </main>
             <Footer />
