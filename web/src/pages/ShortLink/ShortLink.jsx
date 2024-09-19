@@ -45,7 +45,9 @@ export default function ShortLink() {
 
     async function getAllLinks(page = 1) {
         try {
-            const response = await axios.get(`/shortlinks?page=${page}`, { headers: { "Content-Type": 'application/json' } });
+            const response = await axios.get(`/shortlinks?page=${page}`, {
+                headers: { "Content-Type": 'application/json', Authorization: `Bearer ${auth.token}` },
+            });
             console.log(response.data);
             const links = response.data.shortlinks;
             const meta = response.data.meta;
