@@ -1,3 +1,4 @@
+import { User } from "@prisma/client";
 import AppError from "../errors/AppError";
 import prismaClient from "../utils/prismaClient";
 import userRepository from "./UserRepository";
@@ -9,14 +10,15 @@ interface ShortlinkRequestBody {
 }
 
 
-interface PaginationType {
+interface PageType {
     page: number;
     limit: number;
+    user: User;
 }
 
 
 class ShortlinkRepository {
-    async getAllShortlinks({ page, limit }: PaginationType) {
+    async getAllShortlinks({ page, limit, user }: PageType) {
         const skip = (page - 1) * limit;
         const totalLinks = await prismaClient.shortLink.count();
         const totalPages = Math.ceil(totalLinks / limit);
@@ -27,15 +29,20 @@ class ShortlinkRepository {
             skip, take: limit,
             orderBy: {
                 createdAt: "desc",
+            },
+            where: {
+                userId: user.id,
             }
         });
-        return {shortlinks, meta: {
-            totalItems: totalLinks,
-            totalPages,
-            currentPage: page,
-            prevPage: hasPrevPage ? page - 1 : null,
-            nextPage: hasNextPage ? page + 1 : null,
-        }};
+        return {
+            shortlinks, meta: {
+                totalItems: totalLinks,
+                totalPages,
+                currentPage: page,
+                prevPage: hasPrevPage ? page - 1 : null,
+                nextPage: hasNextPage ? page + 1 : null,
+            }
+        };
     }
 
     async getShortlink(id: string) {

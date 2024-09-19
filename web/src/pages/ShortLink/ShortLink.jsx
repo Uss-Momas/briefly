@@ -39,6 +39,8 @@ export default function ShortLink() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedLink, setSelectedLink] = useState(null);
 
+    const [copiedLink, setCopiedLink] = useState(null);
+
     useEffect(() => {
         getAllLinks(currentPage);
     }, []);
@@ -99,6 +101,14 @@ export default function ShortLink() {
         setTimeout(() => {
             setIsCopied(false);
         }, 1500);
+    }
+
+    async function handleCopyLink(shortUrl) {
+        await copyToClipboard(shortUrl);
+        setCopiedLink(shortUrl);
+        setTimeout(() => {
+            setCopiedLink(null);
+        }, 2000);
     }
 
     // Trigger modal on delete button click
@@ -178,18 +188,21 @@ export default function ShortLink() {
                             <tbody>
                                 {
                                     shortlinks.length > 0 ? shortlinks.map((link, idx) => {
+                                        const shortUrl = `${window.location.origin}/${link.code}`;
                                         const createdAt = new Date(link.createdAt).toLocaleString();
                                         return (
                                             <tr key={idx} className="border-t text-gray-700 text-sm">
                                                 <td className="px-6 py-4 break-all">{link.originalUrl}</td>
                                                 <td className="px-6 py-4 break-all text-blue-600">
-                                                    <a target="_blank" href={`${window.location.origin}/${link.code}`}>{`${window.location.origin}/${link.code}`}</a>
+                                                    <a target="_blank" href={shortUrl}>{shortUrl}</a>
                                                 </td>
                                                 <td className="text-center px-6 py-4">100</td>
                                                 <td className="text-center px-6 py-4">{createdAt}</td>
                                                 <td className="text-center px-6 py-4 space-x-3">
-                                                    <button className="text-blue-600 hover:text-blue-800 transition-colors border-none">
-                                                        {<Copy />}
+                                                    <button className="text-blue-600 hover:text-blue-800 transition-colors border-none"
+                                                        onClick={() => handleCopyLink(shortUrl)}
+                                                    >
+                                                        {copiedLink === shortUrl ? <CopyCheck className="text-green-600" /> : <Copy />}
                                                     </button>
                                                     <button onClick={() => handleDeleteClick(link)} className="text-red-600 hover:text-red-800 transition-colors border-none">
                                                         <Trash2 />
@@ -198,7 +211,7 @@ export default function ShortLink() {
                                             </tr>
                                         );
                                     }) : (<tr>
-                                        <td colSpan="4" className="text-center px-6 py-4 text-gray-500">
+                                        <td colSpan="5" className="text-center px-6 py-4 text-gray-500">
                                             No data available
                                         </td>
                                     </tr>)
