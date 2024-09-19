@@ -14,6 +14,7 @@ export default async function shortlinkRoutes(fastify: FastifyInstance) {
 
             request.query = query;
         },
+        onRequest: [fastify.authenticate],
     }, async (request, reply) => shortlinkController.getAllShortlinks(request, reply));
     fastify.get('/:id', { onRequest: [fastify.authenticate] }, async (request, reply) => shortlinkController.getShortlink(request, reply));
     fastify.post('/', { onRequest: [fastify.authenticate] }, async (request, reply) => shortlinkController.createShortlink(request, reply));
