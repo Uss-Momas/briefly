@@ -41,7 +41,7 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  // <StrictMode>
     <AuthProvider>
       <BrowserRouter>
         <ResponseInterceptor />
@@ -81,5 +81,5 @@ createRoot(document.getElementById('root')).render(
       {/* <Signup /> */}
       {/* <ShortLink /> */}
     </AuthProvider>
-  </StrictMode>,
+  // </StrictMode>,
 )

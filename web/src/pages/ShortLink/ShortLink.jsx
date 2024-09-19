@@ -222,7 +222,7 @@ export default function ShortLink() {
                                                 <td className="px-6 py-4 break-all text-blue-600">
                                                     <a target="_blank" href={shortUrl}>{shortUrl}</a>
                                                 </td>
-                                                <td className="text-center px-6 py-4">100</td>
+                                                <td className="text-center px-6 py-4">{link.clicks}</td>
                                                 <td className="text-center px-6 py-4">{createdAt}</td>
                                                 <td className="text-center px-6 py-4 space-x-3">
                                                     <button className="text-blue-600 hover:text-blue-800 transition-colors border-none"
