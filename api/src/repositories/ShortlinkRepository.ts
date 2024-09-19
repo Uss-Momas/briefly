@@ -25,6 +25,9 @@ class ShortlinkRepository {
 
         const shortlinks = await prismaClient.shortLink.findMany({
             skip, take: limit,
+            orderBy: {
+                createdAt: "desc",
+            }
         });
         return {shortlinks, meta: {
             totalItems: totalLinks,

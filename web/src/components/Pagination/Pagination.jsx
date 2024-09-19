@@ -7,9 +7,8 @@ export default function Pagination({ currentPage, totalPages, onPageChange, clas
 
     const getPageNumbers = () => {
         const pageNumbers = [];
-        console.log(currentPage, totalPages,);
 
-        if (currentPage > 1)
+        if (currentPage >= 1 && totalPages > 1)
             pageNumbers.push(1); // Always display the first page
 
         // If currentPage is greater than 3, we show '...'

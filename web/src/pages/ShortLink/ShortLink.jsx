@@ -76,6 +76,7 @@ export default function ShortLink() {
             const responseData = response.data;
             console.log(responseData);
             setShortenedCode(`http://localhost:3333/${responseData.shortlink.code}`);
+            getAllLinks(currentPage);
             // reset();
         } catch (error) {
             setError("root", {
@@ -170,12 +171,14 @@ export default function ShortLink() {
                                     <th className="text-center px-6 py-3 text-gray-600">Original URL</th>
                                     <th className="text-center px-6 py-3 text-gray-600">Short URL</th>
                                     <th className="text-center px-6 py-3 text-gray-600">Clicks</th>
+                                    <th className="text-center px-6 py-3 text-gray-600">Date</th>
                                     <th className="text-center px-6 py-3 text-gray-600">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {
                                     shortlinks.length > 0 ? shortlinks.map((link, idx) => {
+                                        const createdAt = new Date(link.createdAt).toLocaleString();
                                         return (
                                             <tr key={idx} className="border-t text-gray-700 text-sm">
                                                 <td className="px-6 py-4 break-all">{link.originalUrl}</td>
@@ -183,6 +186,7 @@ export default function ShortLink() {
                                                     <a target="_blank" href={`${window.location.origin}/${link.code}`}>{`${window.location.origin}/${link.code}`}</a>
                                                 </td>
                                                 <td className="text-center px-6 py-4">100</td>
+                                                <td className="text-center px-6 py-4">{createdAt}</td>
                                                 <td className="text-center px-6 py-4 space-x-3">
                                                     <button className="text-blue-600 hover:text-blue-800 transition-colors border-none">
                                                         {<Copy />}
