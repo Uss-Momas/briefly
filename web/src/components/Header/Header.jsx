@@ -1,35 +1,67 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Button from "../Button/Button";
 import useAuth from "@/hooks/useAuth";
 import { LogOut, User } from "lucide-react";
 
-export default function Header() {
+export default function Header({ scrollToSection }) {
     const navigate = useNavigate();
+    const { pathname } = useLocation();
     const { isLoggedIn, auth, loading, logout } = useAuth();
 
     if (loading) {
         return (<div>Loading...</div>);
     }
+
+    // Function to handle navigation and scrolling
+    function handleNavigateAndScroll(sectionId) {
+        if (pathname !== "/") {
+            navigate("/", { state: { scrollTo: sectionId } });
+        } else {
+            scrollToSection(sectionId);
+        }
+    };
+
     const user = auth.user;
 
     return (
         <nav className="flex justify-between items-center p-6 bg-white shadow-md">
-            <div className="flex text-purple-600 gap-x-5 items-center">
-                <Link to={'/'}>
-                    <strong className="text-xl font-bold">LOGO</strong>
-                </Link>
+            <ul className="flex text-purple-600 gap-x-5 items-center">
+                <li>
+                    <Link to={'/'}>
+                        <strong className="text-xl font-bold">LOGO</strong>
+                    </Link>
+                </li>
+                <li>
+                    <button onClick={() => handleNavigateAndScroll("home")} className="text-gray-600 hover:text-blue-600">
+                        Home
+                    </button>
+                </li>
+                <li>
+                    <button onClick={() => handleNavigateAndScroll("about")} className="text-gray-600 hover:text-blue-600">
+                        About
+                    </button>
+                </li>
+                <li>
+                    <button onClick={() => handleNavigateAndScroll("contact")} className="text-gray-600 hover:text-blue-600">
+                        Contact
+                    </button>
+                </li>
                 {
                     !isLoggedIn ? (
-                        <Link to={'/shortlink-anonimous'}>
-                            <span>Link Shortener</span>
-                        </Link>
+                        <li>
+                            <Link to={'/shortlink-anonimous'}>
+                                <span>Link Shortener</span>
+                            </Link>
+                        </li>
                     ) : (
-                        <Link to={'/shorturl'}>
-                            <span>Link Shortener</span>
-                        </Link>
+                        <li>
+                            <Link to={'/shorturl'}>
+                                <span>Link Shortener</span>
+                            </Link>
+                        </li>
                     )
                 }
-            </div>
+            </ul>
             <div className="space-x-6">
                 {
                     !isLoggedIn ? (<>

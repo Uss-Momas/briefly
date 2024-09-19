@@ -7,6 +7,7 @@ import Header from "../../components/Header/Header";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "@/api/axios";
 import useAuth from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const loginSchema = z.object({
     email: z.string().email({ message: "Email must contain @" }),
@@ -17,6 +18,7 @@ export default function Login(params) {
     const { register, handleSubmit, setError, clearErrors, formState: { errors, isLoading, isSubmitting } } = useForm({
         resolver: zodResolver(loginSchema),
     });
+    const navigate = useNavigate();
 
     // const { setAuth } = useContext(AuthContext);
     const { addLoginData } = useAuth();
@@ -30,7 +32,7 @@ export default function Login(params) {
             const { message, token, user } = response.data;
 
             addLoginData({ user, token });
-            
+            navigate('/shorturl');
         } catch (error) {
             if (!error.response) {
                 setError('root', {

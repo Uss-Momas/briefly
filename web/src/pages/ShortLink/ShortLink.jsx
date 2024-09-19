@@ -16,6 +16,7 @@ const schema = z.object({
     url: z.string().url({
         message: 'Url is not valid',
     }),
+    code: z.string().min(3, { message: 'Personal Code must be at least 3 characters long' }).optional().or(z.literal('')),
 });
 
 export default function ShortLink() {
@@ -69,6 +70,7 @@ export default function ShortLink() {
                 url: '/shortlinks',
                 data: {
                     originalUrl: data.url,
+                    code: (!data.code || data.code === '')  ? undefined : data.code,
                 },
                 headers: {
                     Authorization: `Bearer ${auth.token}`,
@@ -81,9 +83,13 @@ export default function ShortLink() {
             getAllLinks(currentPage);
             // reset();
         } catch (error) {
-            setError("root", {
-                message: 'Some Error',
-            })
+            const { errors = [], message } = error.response.data;
+            const messages = errors.map((error) => `${error.message}`);
+            setError('root', {
+                message: [message, ...messages]
+            });
+
+            setTimeout(() => { clearErrors() }, 2000);
         }
     }
 
@@ -150,12 +156,32 @@ export default function ShortLink() {
                         <h1 className='font-semibold text-2xl text-gray-700'>Paste your link here to be shortened</h1>
                         <div>
                             <form className='flex flex-row items-center gap-4' onSubmit={handleSubmit(OnSubmit)}>
-                                <input {...register("url")} type="text" className='flex-grow border rounded-lg p-3 w-full border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-700 transition-all' placeholder="http://example.com" />
-                                <button disabled={isSubmitting} className='flex-shrink-0 rounded-full p-3 bg-blue-600 text-white hover:bg-blue-700 focus:bg-blue-800 transition-all'>{isSubmitting ? "Submitting..." : "Short Link"}</button>
+                                <div className="flex-grow w-full">
+                                    <input {...register("url")} type="text" className='border rounded-lg p-3 w-full border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-700 transition-all' placeholder="http://example.com" />
+                                    {
+                                        <span className="text-red-500 w-full mt-1 block h-2">{errors.url?.message}</span>
+                                    }
+                                </div>
+                                <div className="flex-grow">
+                                    <input {...register("code")} className="flex-grow border rounded-lg p-3 border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-700 transition-all" type="text" placeholder="Personal unique code" />
+                                    {
+                                        <span className="text-red-500 mt-1 block h-2">{errors.code?.message}</span>
+
+                                    }
+                                </div>
+                                <div className="flex-shrink-0">
+                                    <button disabled={isSubmitting}
+                                        className='rounded-full p-3 bg-blue-600 text-white hover:bg-blue-700 focus:bg-blue-800 transition-all'>
+                                        {isSubmitting ? "Submitting..." : "Short Link"}
+                                    </button>
+                                    <span className="mt-1 block h-2"></span>
+                                </div>
                             </form>
-                            {errors.url && (
-                                <span className="text-red-500 mt-1 block">{errors.url.message}</span>
-                            )}
+                            {
+                                errors.root && (
+                                    errors.root.message.map((message) => (<span className="text-red-600 block">{message}</span>))
+                                )
+                            }
                         </div>
                         <div className='flex flex-col gap-2 mt-4'>
                             <span className="text-gray-500">Here is your shortened link:</span>

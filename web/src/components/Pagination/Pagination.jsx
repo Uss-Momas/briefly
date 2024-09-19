@@ -1,3 +1,5 @@
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
 export default function Pagination({ currentPage, totalPages, onPageChange, className }) {
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
@@ -51,7 +53,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange, clas
                     disabled={currentPage === 1}
                     className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:bg-blue-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    Previous
+                    <ChevronLeft />
                 </button>
 
                 {/* Generate page buttons */}
@@ -77,7 +79,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange, clas
                     disabled={currentPage === totalPages}
                     className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:bg-blue-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    Next
+                    <ChevronRight />
                 </button>
             </div>
         ) : null
