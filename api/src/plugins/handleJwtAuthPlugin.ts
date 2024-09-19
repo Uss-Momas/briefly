@@ -13,9 +13,9 @@ const myCustomMessages = {
     authorizationTokenUnsigned: 'Unsigned authorization token',
     // for the below message you can pass a sync function that must return a string as shown or a string
     authorizationTokenInvalid: (err: Error) => {
-      return `Authorization token is invalid: ${err.message}`
+        return `Authorization token is invalid: ${err.message}`
     }
-  }
+}
 
 async function jwtAuthPlugin(fastify: FastifyInstance, opts: FastifyPluginOptions) {
     fastify.register(fastifyJwt, { messages: myCustomMessages, secret: process.env.SECRET_KEY || 'nosecret', sign: { expiresIn: '60min', } });
@@ -32,8 +32,7 @@ async function jwtAuthPlugin(fastify: FastifyInstance, opts: FastifyPluginOption
         }
         try {
             const decoded = request.jwt.verify<FastifyJWTOptions>(token.split(" ")[1]);
-            console.log(decoded);
-            
+
             request.user = decoded;
         } catch (error: any) {
             console.log(error.message, error.code);

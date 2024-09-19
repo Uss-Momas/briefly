@@ -1,0 +1,19 @@
+meta {
+  name: Get shortlink By Code
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{API_URL}}/shortlinks/code/7W4pba
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{ACCESS_TOKEN}}
+}
+
+body:json {
+  {}
+}

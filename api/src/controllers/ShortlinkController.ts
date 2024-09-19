@@ -3,6 +3,7 @@ import { paginationQuerySchema, shortlinkCodeParamSchema, shortlinkRequestBodySc
 import shortlinkRepository from "../repositories/ShortlinkRepository";
 import { generateRandomCodeV2 } from "../utils/generateCode";
 import AppError from "../errors/AppError";
+import { redisClient } from "../utils/redisClient";
 
 class ShortlinkController {
 
@@ -27,6 +28,9 @@ class ShortlinkController {
         const shortlink = await shortlinkRepository.getShortlinkByCode(code);
 
         if (!shortlink) throw new AppError(404, "Original Link Was Not Found");
+
+        await redisClient.zIncrBy('metrics', 1, shortlink.id);
+        console.log(shortlink);
 
         return reply.send({ message: 'Get shortlink', originalUrl: shortlink.originalUrl });
     }

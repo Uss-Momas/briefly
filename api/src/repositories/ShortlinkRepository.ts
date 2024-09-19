@@ -2,6 +2,7 @@ import { User } from "@prisma/client";
 import AppError from "../errors/AppError";
 import prismaClient from "../utils/prismaClient";
 import userRepository from "./UserRepository";
+import metricRepository from "./MetricRepository";
 
 interface ShortlinkRequestBody {
     code: string;
@@ -20,7 +21,7 @@ interface PageType {
 class ShortlinkRepository {
     async getAllShortlinks({ page, limit, user }: PageType) {
         const skip = (page - 1) * limit;
-        const totalLinks = await prismaClient.shortLink.count();
+        const totalLinks = await prismaClient.shortLink.count({ where: { userId: user.id } });
         const totalPages = Math.ceil(totalLinks / limit);
         const hasPrevPage = page > 1;
         const hasNextPage = page < totalPages;
@@ -34,8 +35,22 @@ class ShortlinkRepository {
                 userId: user.id,
             }
         });
+        const shortlinksWithClicks = await Promise.all(
+            shortlinks.map(async (shortlink) => {
+                const clicks = await metricRepository.clicksByShortlink(shortlink.id);
+                return {
+                    originalUrl: shortlink.originalUrl,
+                    code: shortlink.code,
+                    id: shortlink.id,
+                    createdAt: shortlink.createdAt,
+                    userId: shortlink.userId,
+                    clicks
+                };
+            })
+        );
+
         return {
-            shortlinks, meta: {
+            shortlinks: shortlinksWithClicks, meta: {
                 totalItems: totalLinks,
                 totalPages,
                 currentPage: page,

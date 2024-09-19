@@ -7,9 +7,15 @@ meta {
 post {
   url: {{API_URL}}/shortlinks
   body: json
-  auth: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{ACCESS_TOKEN}}
 }
 
 body:json {
-  {}
+  {
+    "originalUrl": "https://google.com"
+  }
 }
