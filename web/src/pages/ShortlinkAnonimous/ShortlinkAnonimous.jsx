@@ -22,7 +22,7 @@ export default function ShortlinkAnonimous(params) {
     });
 
 
-    const [shortenedCode, setShortenedCode] = useState('');
+    const [shortenedCode, setShortenedCode] = useState(null);
     const [isCopied, setIsCopied] = useState(false);
 
     async function OnSubmit(data) {
@@ -36,7 +36,8 @@ export default function ShortlinkAnonimous(params) {
             });
             const responseData = response.data;
             console.log(responseData);
-            setShortenedCode(`http://localhost:3333/${responseData.shortlink.code}`);
+            const origin = window.location.origin;
+            setShortenedCode(`${origin}/${responseData.shortlink.code}`);
             // reset();
         } catch (error) {
             setError("root", {
@@ -76,8 +77,22 @@ export default function ShortlinkAnonimous(params) {
                         <span className="text-red-500">{errors.url.message}</span>
                     )}
                     {shortenedCode && (<div className="flex flex-row items-center border border-purple-600 rounded p-3 bg-purple-50">
-                        <input
-                            className="flex-grow text-zinc-700 bg-purple-50 disabled:bg-purple-50 outline-none" type="text" disabled placeholder="your shortened url here..." value={shortenedCode} />
+                        {/* <input
+                            className="flex-grow text-zinc-700 bg-purple-50 disabled:bg-purple-50 outline-none" type="text" disabled placeholder="your shortened url here..." value={shortenedCode} /> */}
+                        <span className="flex-grow text-zinc-700 bg-purple-50 disabled:bg-purple-50 outline-none px-4 py-2 rounded-lg">
+                            {shortenedCode ? (
+                                <a
+                                    href={shortenedCode}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-purple-600 hover:text-purple-800 underline transition-colors duration-300"
+                                >
+                                    {shortenedCode}
+                                </a>
+                            ) : (
+                                'your shortened url here...'
+                            )}
+                        </span>
 
                         <button onClick={async () => { handleCopyClick(); }}>
                             {isCopied ? <CopyCheck className="w-6 h-6 text-green-600" /> : <Copy className="w-6 h-6 text-zinc-700" />}
