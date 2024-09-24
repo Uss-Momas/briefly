@@ -4,6 +4,7 @@ import { z } from 'zod';
 import axios from "../../api/axios";
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
+import { useNavigate } from "react-router-dom";
 
 
 const schema = z.object({
@@ -23,6 +24,7 @@ const schema = z.object({
 
 export default function Signup() {
     const { register, handleSubmit, clearErrors, setError, reset, formState: { errors, isSubmitting, isSubmitSuccessful, isValid } } = useForm({ resolver: zodResolver(schema) });
+    const navigate = useNavigate();
 
     async function OnSubmit(data) {
         try {
@@ -34,11 +36,13 @@ export default function Signup() {
                 '/auth/signup',
                 data, {
                 headers: { "Content-Type": "application/json" },
-                withCredentials: true,
             }
             );
             console.log(response);
             reset();
+            setTimeout(() => {
+                navigate('/login');
+            }, 1500)
         } catch (error) {
             const { errors = [], message } = error.response.data;
             const messages = errors.map((error) => error.message);
