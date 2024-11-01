@@ -1,7 +1,43 @@
+import { LockIcon, LogIn, Mail, UserPlus } from "lucide-react";
+import { Link } from "react-router-dom";
+
 export default function Signup() {
     return (
         <div>
-            SIGNUP
+            <div className="min-h-dvh flex items-center justify-center bg-gradient-to-br from-purple-800 via-zircon-600 to-purple-600">
+                <div className="flex flex-col gap-6 bg-white w-1/3 rounded-lg py-10 px-6 max-md:w-3/4">
+                    <h1 className="text-xl text-black/80 text-center font-medium">
+                        Create an Account In <Link to={"/"} className="text-purple-600">Briefly</Link>
+                    </h1>
+                    <div className="flex flex-col gap-4">
+                        <div className="flex-1 relative">
+                            <Mail className="absolute left-2 top-2 text-gray-500" />
+                            <input className="border border-purple-600 outline-none focus:ring-2 focus:ring-purple-300 shadow-sm rounded-lg w-full pl-10 py-2" type="email" name="email" placeholder="email address" />
+                        </div>
+                        <div className="relative">
+                            <LockIcon className="absolute left-2 top-2 text-gray-500" />
+                            <input className="border border-purple-600 outline-none focus:ring-2 focus:ring-purple-300 shadow-sm rounded-lg w-full pl-10 py-2" type="password" name="password" placeholder="password" />
+                        </div>
+                        <div className="relative">
+                            <LockIcon className="absolute left-2 top-2 text-gray-500" />
+                            <input className="border border-purple-600 outline-none focus:ring-2 focus:ring-purple-300 shadow-sm rounded-lg w-full pl-10 py-2" type="password" name="password" placeholder="confirm password" />
+                        </div>
+                    </div>
+                    <div className="flex items-center text-gray-600 text-sm gap-2">
+                        <input className="h-4 w-4" type="checkbox" name="remember" id="remember" />
+                        <label className="hover:cursor-pointer" htmlFor="remember">I agree to the Terms of Service and Privacy Policy</label>
+                    </div>
+                    <div className="flex items-center text-white font-medium rounded-lg px-8 py-3 bg-purple-700 transition-all duration-200 hover:scale-105 hover:bg-purple-600 w-full">
+                        <UserPlus className="h-5 w-5 text-purple-300" />
+                        <button className="w-full">
+                            Sign Up
+                        </button>
+                    </div>
+                    <div className="text-center mt-6">
+                        <p className="text-gray-500/90">Already have an account? <Link to={"/login"}><span className="text-purple-600 font-medium hover:text-purple-500">Sign In</span></Link></p>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
