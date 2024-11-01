@@ -11,11 +11,11 @@ export default function Login() {
                 <div className="flex flex-col gap-4">
                     <div className="flex-1 relative">
                         <Mail className="absolute left-2 top-2 text-gray-500"/>
-                        <input className="border border-purple-600 outline-none focus:ring-2 focus:ring-purple-300 shadow-sm rounded-lg w-full pl-10 py-2" type="email" name="email" placeholder="test@email.com"/>
+                        <input className="border border-purple-600 outline-none focus:ring-2 focus:ring-purple-300 shadow-sm rounded-lg w-full pl-10 py-2" type="email" name="email" placeholder="email address"/>
                     </div>
                     <div className="relative">
                         <LockIcon className="absolute left-2 top-2 text-gray-500"/>
-                        <input className="border border-purple-600 outline-none focus:ring-2 focus:ring-purple-300 shadow-sm rounded-lg w-full pl-10 py-2" type="password" name="password" placeholder="*************"/>
+                        <input className="border border-purple-600 outline-none focus:ring-2 focus:ring-purple-300 shadow-sm rounded-lg w-full pl-10 py-2" type="password" name="password" placeholder="password"/>
                     </div>
                 </div>
                 <div className="flex items-center text-white font-medium rounded-lg px-8 py-3 bg-purple-700 transition-all duration-200 hover:scale-105 hover:bg-purple-600 w-full">
