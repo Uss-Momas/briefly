@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 export default function Login() {
     return (
         <div className="min-h-dvh flex items-center justify-center bg-gradient-to-br from-purple-800 via-zircon-600 to-purple-600">
-            <div className="flex flex-col gap-4 bg-white w-1/3 rounded-lg py-10 px-6 max-md:w-3/4">
+            <div className="flex flex-col gap-6 bg-white w-1/3 rounded-lg py-10 px-6 max-md:w-3/4">
                 <h1 className="text-xl text-black/80 text-center font-medium">
                     Sign In to <Link to={"/"} className="text-purple-600">Briefly</Link>
                 </h1>
@@ -18,15 +18,15 @@ export default function Login() {
                         <input className="border border-purple-600 outline-none focus:ring-2 focus:ring-purple-300 shadow-sm rounded-lg w-full pl-10 py-2" type="password" name="password" placeholder="password"/>
                     </div>
                 </div>
+                <div className="flex items-center text-gray-600 text-sm gap-2">
+                    <input className="h-4 w-4" type="checkbox" name="remember" id="remember"/>
+                    <label className="hover:cursor-pointer" htmlFor="remember">remember-me</label>
+                </div>
                 <div className="flex items-center text-white font-medium rounded-lg px-8 py-3 bg-purple-700 transition-all duration-200 hover:scale-105 hover:bg-purple-600 w-full">
                     <LogIn className="h-5 w-5" />
                     <button className="w-full">
                         Sign In
                     </button>
-                </div>
-                <div className="flex items-center text-gray-600 gap-2">
-                    <input className="h-4 w-4" type="checkbox" name="remember" id="remember"/>
-                    <label className="hover:cursor-pointer" htmlFor="remember">remember-me</label>
                 </div>
                 <div className="text-center mt-6">
                     <p className="text-gray-500/90">Don't have an account? <Link to={"/signup"}><span className="text-purple-600 font-medium hover:text-purple-500">Sign Up</span></Link></p>
