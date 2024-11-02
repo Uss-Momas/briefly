@@ -42,7 +42,7 @@ export default function UserHeader() {
                     </button>
                 </div>
                 {mobileNav && (
-                    <ul className="sm:hidden flex flex-col gap-2 absolute bg-white w-full">
+                    <ul className="sm:hidden flex flex-col gap-2 absolute bg-white w-full shadow-md">
                         <li>
                             <Link to={"/auth/dashboard"} className="flex justify-center items-center text-gray-600 text-base font-medium hover:text-purple-800 hover:bg-gray-100 rounded-lg px-3 py-2">
                                 <LucideLink className="h-6 w-6 mr-2" />

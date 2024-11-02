@@ -1,8 +1,9 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import Analytics from "./pages/Auth/Analytics";
+import Dashboard from "./pages/Auth/Dashboard";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import Dashboard from "./pages/Auth/Dashboard";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
   {
     path: '/auth/dashboard',
     element: <Dashboard />,
+  },
+  {
+    path: '/auth/analytics',
+    element: <Analytics />,
   }
 ]);
 
