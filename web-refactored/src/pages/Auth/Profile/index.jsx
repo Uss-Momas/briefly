@@ -1,7 +1,7 @@
 import { LockIcon, Mail, User } from "lucide-react";
+import { useState } from "react";
 import Footer from "../../../components/Footer";
 import UserHeader from "../../../components/UserHeader";
-import { useState } from "react";
 
 export default function Profile() {
     const [isProfileTab, setIsProfileTab] = useState(true);
