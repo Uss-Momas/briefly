@@ -1,17 +1,30 @@
 import { LockIcon, Mail, Text, UserPlus } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signupSchema } from "../../Validations/validations";
+import axios from "../../api/axios";
 
 export default function Signup() {
-    const { register, formState: { errors }, handleSubmit } = useForm({
+    const { clearErrors, register, formState: { errors }, setError, handleSubmit } = useForm({
         resolver: zodResolver(signupSchema),
     });
+    const navigate = useNavigate();
 
-    const OnSubmit = (data) => {
+    const OnSubmit = async (data) => {
+        try {
+            console.log(data);
 
-        console.log(data);
+            const response = await axios.post("/auth/signup", data);
+            navigate('/login');
+        } catch (error) {
+            const { errors = [], message } = error.response.data;
+            const messages = errors.map((e) => e.message);
+            setError("root", { message: [message, ...messages] });
+            setTimeout(() => {
+                clearErrors();
+            }, 2500);
+        }
     }
 
     return (
@@ -35,11 +48,11 @@ export default function Signup() {
                             <div className="flex flex-col gap-2">
                                 <div className="flex-1 relative">
                                     <Text className="absolute left-2 top-2 text-gray-500" />
-                                    <input {...register("firstName")}
-                                        aria-invalid={errors.firstName ? "true" : "false"}
-                                        className="border border-purple-600 outline-none focus:ring-2 focus:ring-purple-300 shadow-sm rounded-lg aria-[invalid=true]:border-red-500 aria-[invalid=true]:focus:ring-red-300 w-full pl-10 pr-4 py-2" type="text" name="firstName" placeholder="Enter your first name" />
+                                    <input {...register("name")}
+                                        aria-invalid={errors.name ? "true" : "false"}
+                                        className="border border-purple-600 outline-none focus:ring-2 focus:ring-purple-300 shadow-sm rounded-lg aria-[invalid=true]:border-red-500 aria-[invalid=true]:focus:ring-red-300 w-full pl-10 pr-4 py-2" type="text" name="name" placeholder="Enter your first name" />
                                 </div>
-                                <span className="text-sm text-red-400">{errors.firstName && errors.firstName.message}</span>
+                                <span className="text-sm text-red-400">{errors.name && errors.name.message}</span>
                             </div>
                             <div className="flex flex-col gap-2">
                                 <div className="relative">
@@ -65,9 +78,10 @@ export default function Signup() {
                             <label className={`hover:cursor-pointer ${errors.termsAgreement ? "text-red-400" : "text-gray-600"}`} htmlFor="termsAgreement">I agree to the Terms of Service and Privacy Policy</label>
                             <span className="text-sm text-red-400">{errors.termsAgreement && "*"} </span>
                         </div>
-                        <div className="flex items-center text-white font-medium rounded-lg px-8 py-3 bg-purple-700 transition-all duration-200 hover:scale-105 hover:bg-purple-600 w-full">
-                            <UserPlus className="h-5 w-5 text-purple-300" />
-                            <button type="submit" className="w-full">
+                        <div className="flex flex-col gap-2">
+                            <span className="text-sm text-red-500">{errors.root && errors.root.message[errors.root.message.length - 1]}</span>
+                            <button type="submit" className="relative text-white font-medium rounded-lg px-8 py-3 bg-purple-700 transition-all duration-200 hover:scale-105 hover:bg-purple-600 w-full">
+                                <UserPlus className="absolute h-5 w-5 text-purple-300" />
                                 Sign Up
                             </button>
                         </div>
