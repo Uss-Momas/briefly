@@ -1,9 +1,9 @@
 import { Copy, ExternalLink, LinkIcon, Trash2, } from "lucide-react";
 import Footer from "../../../components/Footer";
 import UserHeader from "../../../components/UserHeader";
+import { useAuth } from "../../../hooks/useAuth";
 
 export default function Dashboard() {
-
     return (
         <div className="min-h-dvh bg-gradient-to-r from-zircon-50 via-zircon-100 to-zircon-50">
             <UserHeader />

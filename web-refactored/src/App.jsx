@@ -1,5 +1,6 @@
 import { AuthProvider } from './context/AuthContext';
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import ProtectedRoute from './components/ProtectedRoute'
 import Analytics from "./pages/Auth/Analytics";
 import Dashboard from "./pages/Auth/Dashboard";
 import Home from "./pages/Home";
@@ -22,15 +23,15 @@ const router = createBrowserRouter([
   },
   {
     path: '/auth/dashboard',
-    element: <Dashboard />,
+    element: <ProtectedRoute ><Dashboard /></ProtectedRoute>,
   },
   {
     path: '/auth/analytics',
-    element: <Analytics />,
+    element: <ProtectedRoute ><Analytics /></ProtectedRoute>,
   },
   {
     path: '/auth/profile',
-    element: <Profile />,
+    element: <ProtectedRoute><Profile /></ProtectedRoute>,
   },
 ]);
 
