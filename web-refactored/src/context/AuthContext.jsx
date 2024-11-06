@@ -16,7 +16,7 @@ export function AuthProvider({ children }) {
 
     function login(authData) {
         setAuth(authData);
-        localStorage.setItem("auth", JSON.parse(authData));
+        localStorage.setItem("auth", JSON.stringify(authData));
     }
 
     function logout() {
