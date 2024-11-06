@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { LockIcon, LogIn, Mail } from "lucide-react";
 import { loginSchema } from "../../Validations/validations";
 import { useForm } from "react-hook-form";
@@ -12,6 +12,7 @@ export default function Login() {
     });
 
     const { auth, login } = useAuth();
+    const navigate = useNavigate();
 
 
     const onSubmit = async (data) => {
@@ -19,6 +20,7 @@ export default function Login() {
             const response = await axios.post("/auth/login", data);
             const { message, token, user } = response.data;
             login({ token, user });
+            navigate("/auth/dashboard");
         } catch (error) {
             console.log("Login Page", error);
             const { errors = [], message } = error.response.data;

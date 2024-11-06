@@ -1,10 +1,12 @@
 import { LockIcon, Mail, User } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "../../../hooks/useAuth";
 import Footer from "../../../components/Footer";
 import UserHeader from "../../../components/UserHeader";
 
 export default function Profile() {
     const [isProfileTab, setIsProfileTab] = useState(true);
+    const { logout } = useAuth();
 
     const handleProfileTab = (event) => {
         setIsProfileTab(true);
@@ -12,6 +14,10 @@ export default function Profile() {
 
     const handlePasswordTab = (event) => {
         setIsProfileTab(false);
+    }
+
+    const handleLogout = (event) => {
+        logout();
     }
 
     return (
@@ -31,8 +37,8 @@ export default function Profile() {
                                     Profile Settings
                                 </button>
                                 <button onClick={handlePasswordTab} className={` w-1/2 py-4 px-1 text-center border-b-2 font-medium text-sm ${!isProfileTab
-                                        ? "border-purple-700 text-purple-700 hover:border-purple-800 hover:text-purple-800 hover:bg-gray-100 hover:rounded-t-md"
-                                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                    ? "border-purple-700 text-purple-700 hover:border-purple-800 hover:text-purple-800 hover:bg-gray-100 hover:rounded-t-md"
+                                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                                     }`}>
                                     Update Password
                                 </button>
@@ -85,6 +91,9 @@ export default function Profile() {
                             )
                         }
                     </div>
+                </section>
+                <section className="flex justify-end m-6">
+                    <button onClick={handleLogout} className="text-sm font-medium text-gray-500 hover:text-purple-700">Log out</button>
                 </section>
             </main>
             <Footer />
