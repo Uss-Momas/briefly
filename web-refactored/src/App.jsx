@@ -1,3 +1,4 @@
+import { AuthProvider } from './context/AuthContext';
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import Analytics from "./pages/Auth/Analytics";
 import Dashboard from "./pages/Auth/Dashboard";
@@ -35,6 +36,8 @@ const router = createBrowserRouter([
 
 export default function App() {
   return (
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   )
 }

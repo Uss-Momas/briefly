@@ -14,13 +14,18 @@ export function AuthProvider({ children }) {
         setIsLoading(false);
     }, []);
 
+    function login(authData) {
+        setAuth(authData);
+        localStorage.setItem("auth", JSON.parse(authData));
+    }
+
     function logout() {
         localStorage.removeItem("auth");
         setAuth(undefined);
     }
 
     return (
-        <AuthContext.Provider value={{ auth, isLoading, logout }}>
+        <AuthContext.Provider value={{ auth, isLoading, login, logout }}>
             {children}
         </AuthContext.Provider>
     );
