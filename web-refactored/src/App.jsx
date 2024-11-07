@@ -7,11 +7,16 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Profile from "./pages/Auth/Profile";
 import Signup from "./pages/Signup";
+import RedirectLink from './pages/RedirectLink';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <Home />
+  },
+  {
+    path: '/:code',
+    element: <RedirectLink />,
   },
   {
     path: '/login',

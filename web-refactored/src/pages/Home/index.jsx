@@ -145,7 +145,7 @@ export default function Home() {
                         py-3 px-4 text-white">
                                 {
                                     shortUrl ? (<a href={shortUrl} target="_blank" className="group-hover:text-white/80 
-                           transition-colors">
+                           transition-colors hover:underline">
                                         {shortUrl}
                                     </a>) : (
                                         <span className="group-hover:text-white/80 
