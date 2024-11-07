@@ -1,11 +1,13 @@
 import { AlignJustify, ArrowRight, ChartNoAxesColumn, Link2, Linkedin, LinkedinIcon, LinkIcon, LockIcon, LucideLink, Mail, MessageCircle, Twitter, X } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from '../../hooks/useAuth';
 import Card from "../../components/Card";
 import ProfilePicture from "../../assets/riscos.webp";
 
 export default function Home() {
     const [mobileNav, setMobileNav] = useState(false);
+    const { auth } = useAuth();
 
     const handleMenuClick = (event) => {
         event.preventDefault();
@@ -50,12 +52,21 @@ export default function Home() {
                             <li className="text-gray-500 p-2 hover:bg-gray-50">
                                 <a href="#services">Services</a>
                             </li>
-                            <li className="text-purple-500 p-2 hover:bg-gray-50">
-                                <Link to={`/login`}>Log In</Link>
-                            </li>
-                            <li className="text-purple-500 p-2 hover:bg-gray-50">
-                                <Link to={`/signup`}>Sign Up</Link>
-                            </li>
+                            {
+                                !auth ?
+                                    (<>
+                                        <li className="text-purple-500 p-2 hover:bg-gray-50">
+                                            <Link to={`/login`}>Log In</Link>
+                                        </li>
+                                        <li className="text-purple-500 p-2 hover:bg-gray-50">
+                                            <Link to={`/signup`}>Sign Up</Link>
+                                        </li>
+                                    </>) : (
+                                        <li className="text-purple-500 p-2 hover:bg-gray-50">
+                                            <Link to={`/auth/dashboard`}>Dashboard</Link>
+                                        </li>
+                                    )
+                            }
                         </ul>
                     )}
                 </nav>
@@ -72,35 +83,39 @@ export default function Home() {
                             Free tool to shorten URLs and create memorable, shareable links in seconds
                         </p>
                     </div>
-                    <div className="flex flex-col gap-4 sm:flex-row w-full max-w-lg">
-                        <div className="flex-1 relative">
-                            <LinkIcon className="absolute left-3 top-1/4 text-gray-400 w-5 h-5" />
-                            <input className="w-full outline-none focus:ring-2 focus:ring-purple-300 shadow-sm rounded-lg border-0 py-3 px-4 pl-10" type="url" placeholder="Paste your long URL here..." />
-                        </div>
-                        <button className="flex items-center justify-center gap-2 bg-white text-purple-600 rounded-lg font-semibold transition-all shadow-md hover:bg-purple-50 hover:shadow-lg hover:scale-95 duration-150 py-3 px-8" type="submit">Shorten URL</button>
-                    </div>
+                    {
+                        !auth && (<>
+                            <div className="flex flex-col gap-4 sm:flex-row w-full max-w-lg">
+                                <div className="flex-1 relative">
+                                    <LinkIcon className="absolute left-3 top-1/4 text-gray-400 w-5 h-5" />
+                                    <input className="w-full outline-none focus:ring-2 focus:ring-purple-300 shadow-sm rounded-lg border-0 py-3 px-4 pl-10" type="url" placeholder="Paste your long URL here..." />
+                                </div>
+                                <button className="flex items-center justify-center gap-2 bg-white text-purple-600 rounded-lg font-semibold transition-all shadow-md hover:bg-purple-50 hover:shadow-lg hover:scale-95 duration-150 py-3 px-8" type="submit">Shorten URL</button>
+                            </div>
 
-                    <div className="bg-white/10 backdrop-blur-sm rounded-lg 
+                            <div className="bg-white/10 backdrop-blur-sm rounded-lg 
                         flex items-center justify-between 
                         py-3 px-4 text-white">
-                        <a href={"https://short.link/abcdefg"} target="_blank" className="group-hover:text-white/80 
+                                <a href={"https://short.link/abcdefg"} target="_blank" className="group-hover:text-white/80 
                            transition-colors">
-                            https://short.link/abcdefg
-                        </a>
-                        <button className="text-sm bg-white/20 hover:bg-white/30 
+                                    https://short.link/abcdefg
+                                </a>
+                                <button className="text-sm bg-white/20 hover:bg-white/30 
                                rounded-md py-1 px-3 ml-2 transition-colors">
-                            Copy
-                        </button>
-                    </div>
+                                    Copy
+                                </button>
+                            </div>
+                        </>)
+                    }
 
                     <div className="mt-8 text-center">
                         <p className="text-white/90 text-lg font-medium mb-4">
                             Want custom branded links and detailed analytics?
                         </p>
                         <div className="flex flex-col sm:flex-row items-center gap-4 justify-center">
-                            <Link to={"/signup"}>
+                            <Link to={`${!auth ? "/signup" : "/auth/dashboard"}`}>
                                 <button className="flex items-center gap-2 bg-white text-purple-600 rounded-lg font-semibold transition-all shadow-md hover:bg-purple-50 hover:shadow-lg hover:scale-105 duration-150 py-3 px-8">
-                                    Get Started for Free
+                                    {!auth ? "Get Started for Free" : "Go to dashboard & Start shortening"}
                                     <ArrowRight className="w-5 h-5" />
                                 </button>
                             </Link>
@@ -183,9 +198,9 @@ export default function Home() {
                         </p>
                     </div>
                     <div className="flex flex-col sm:flex-row items-center gap-4 justify-center">
-                        <Link to={"/signup"}>
+                        <Link to={`${!auth ? "/signup" : "/auth/dashboard"}`}>
                             <button className="flex items-center gap-2 bg-white text-purple-600 rounded-lg font-semibold transition-all shadow-md hover:bg-purple-50 hover:shadow-lg hover:scale-105 duration-150 py-3 px-8">
-                                Get Started for Free
+                                {!auth ? "Get Started for Free" : "Go to dashboard & Start shortening"}
                                 <ArrowRight className="w-5 h-5" />
                             </button>
                         </Link>
