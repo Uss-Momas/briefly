@@ -1,7 +1,9 @@
 import { z } from 'zod';
 
+const urlPattern = /^(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
+
 export const shortlinkRequestBodySchema = z.object({
-    originalUrl: z.string().url(),
+    originalUrl: z.string().regex(urlPattern, {message: "Provide a valid URL"}),
     code: z.string().min(3, { message: "Must be 3 or more characters long" }).max(10, { message: "Must be 10 or less characters long" }).optional(),
 });
 
