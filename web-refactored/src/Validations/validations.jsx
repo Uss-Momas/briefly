@@ -13,3 +13,8 @@ export const loginSchema = z.object({
     email: z.string().email({ message: "Email is not valid" }),
     password: z.string({ message: "Password must be letters, numbers and special characters" }).min(1, { message: "Password can't be empty" }),
 });
+
+const urlPattern = /^(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
+export const shortURLAnon = z.object({
+    originalUrl: z.string().regex(urlPattern, { message: "Provide a valid URL" }),
+});

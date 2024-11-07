@@ -1,17 +1,58 @@
 import { AlignJustify, ArrowRight, ChartNoAxesColumn, Link2, Linkedin, LinkedinIcon, LinkIcon, LockIcon, LucideLink, Mail, MessageCircle, Twitter, X } from "lucide-react";
-import { useState } from "react";
+import { copyToClipboard } from "../../utils/utils";
 import { Link } from "react-router-dom";
+import { shortURLAnon } from "../../Validations/validations";
 import { useAuth } from '../../hooks/useAuth';
+import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "../../api/axios";
 import Card from "../../components/Card";
 import ProfilePicture from "../../assets/riscos.webp";
+import appendUrl from "../../utils/appendUrl";
 
 export default function Home() {
     const [mobileNav, setMobileNav] = useState(false);
-    const { auth } = useAuth();
+    const { auth, isLoading } = useAuth();
+    const [shortUrl, setShortUrl] = useState(undefined);
+    const [isCopied, setIsCopied] = useState(false);
+    const { formState: { errors }, handleSubmit, register, setError, clearErrors } = useForm({
+        resolver: zodResolver(shortURLAnon),
+    });
+
+    if (isLoading) return <>Loading....</>;
 
     const handleMenuClick = (event) => {
         event.preventDefault();
         setMobileNav(!mobileNav);
+    }
+
+    const handleUrlShortening = async (data) => {
+        try {
+            console.log(data);
+            const response = await axios.post("/shortlinks/anonimous", data);
+            const { shortlink } = response.data;
+            const url = await appendUrl(shortlink.code);
+            setShortUrl(url);
+        } catch (error) {
+            if (error.response) {
+                const errorResponse = error.response.data;
+                const { errors = [], message } = errorResponse;
+                const errorMessages = errors.map((e) => e.message);
+                setError("root", { message: [message, ...errorMessages] });
+                setTimeout(clearErrors, 2500);
+                console.log("Landing Page errors: ", errorResponse);
+            } else {
+                console.log("Landing Page errors: ", error);
+            }
+        }
+    }
+
+    const handleShortUrlCopy = async () => {
+        await copyToClipboard(shortUrl);
+        console.log("clickedd");
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
     }
 
     return (
@@ -19,7 +60,7 @@ export default function Home() {
             <header className="fixed w-full h-16 z-50 bg-white shadow-md">
                 <nav>
                     <div className="flex items-center justify-between p-2 sm:px-16 sm:py-4">
-                        <a href="#home">
+                        <a href="">
                             <span className="text-purple-700 text-2xl font-bold" >Briefly</span>
                         </a>
                         <ul className="flex gap-2 items-center max-sm:hidden transition ease-in-out">
@@ -74,7 +115,7 @@ export default function Home() {
             <main className="pt-16">
                 {/* TO SHORT ANONYMOUSLY */}
                 <section id="home" className="bg-gradient-to-br from-purple-800 to-purple-600 flex flex-col items-center gap-8 py-20 px-5 scroll-mt-16">
-                    <div className="flex flex-col gap-4 text-center max-w-2xl">
+                    <div className="flex flex-col gap-4 text-center max-w-2xl ">
                         <h1 className="text-white font-bold text-3xl leading-tight">
                             Transform Long URLs Into
                             <span className="block">Short Links Instantly</span>
@@ -85,24 +126,37 @@ export default function Home() {
                     </div>
                     {
                         !auth && (<>
-                            <div className="flex flex-col gap-4 sm:flex-row w-full max-w-lg">
-                                <div className="flex-1 relative">
-                                    <LinkIcon className="absolute left-3 top-1/4 text-gray-400 w-5 h-5" />
-                                    <input className="w-full outline-none focus:ring-2 focus:ring-purple-300 shadow-sm rounded-lg border-0 py-3 px-4 pl-10" type="url" placeholder="Paste your long URL here..." />
+                            <form onSubmit={handleSubmit(handleUrlShortening)} className="flex flex-col gap-4 sm:flex-row w-full max-w-lg">
+                                <div className="flex flex-col gap-2  sm:w-4/6">
+                                    <div className="flex-1 relative">
+                                        <LinkIcon className="absolute left-3 top-1/4 text-gray-400 w-5 h-5" />
+                                        <input {...register("originalUrl")} aria-invalid={errors.originalUrl ? "true" : "false"} className="w-full border border-purple-600 outline-none focus:ring-2 focus:ring-purple-300 shadow-sm rounded-lg  aria-[invalid=true]:border-yellow-300 aria-[invalid=true]:ring-yellow-500 py-3 px-4 pl-10" type="text" placeholder="Paste your long URL here..." />
+                                    </div>
+                                    <span className="text-sm text-yellow-300">{errors.originalUrl && errors.originalUrl.message}</span>
                                 </div>
-                                <button className="flex items-center justify-center gap-2 bg-white text-purple-600 rounded-lg font-semibold transition-all shadow-md hover:bg-purple-50 hover:shadow-lg hover:scale-95 duration-150 py-3 px-8" type="submit">Shorten URL</button>
-                            </div>
+                                <div className="flex flex-col gap-2">
+                                    <button className="bg-white text-purple-600 rounded-lg font-semibold transition-all shadow-md hover:bg-purple-50 hover:shadow-lg hover:scale-95 duration-150 py-3 px-8 sm:px-6" type="submit">Shorten URL</button>
+                                    <span className="text-sm text-yellow-300">{errors.root && errors.root.message[errors.root.message.length - 1]}</span>
+                                </div>
+                            </form>
 
                             <div className="bg-white/10 backdrop-blur-sm rounded-lg 
                         flex items-center justify-between 
                         py-3 px-4 text-white">
-                                <a href={"https://short.link/abcdefg"} target="_blank" className="group-hover:text-white/80 
+                                {
+                                    shortUrl ? (<a href={shortUrl} target="_blank" className="group-hover:text-white/80 
                            transition-colors">
-                                    https://short.link/abcdefg
-                                </a>
-                                <button className="text-sm bg-white/20 hover:bg-white/30 
-                               rounded-md py-1 px-3 ml-2 transition-colors">
-                                    Copy
+                                        {shortUrl}
+                                    </a>) : (
+                                        <span className="group-hover:text-white/80 
+                                        transition-colors">shortened url... </span>
+                                    )
+                                }
+                                <button onClick={handleShortUrlCopy} className="text-sm bg-white/20 hover:bg-white/30 
+                               rounded-md py-1 px-3 ml-2 transition-colors disabled:bg-gray-100/70" disabled={shortUrl ? false : true}>
+                                    {
+                                        !isCopied ? "Copy" : "Copied!"
+                                    }
                                 </button>
                             </div>
                         </>)
