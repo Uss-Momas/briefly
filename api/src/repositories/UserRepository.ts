@@ -9,6 +9,12 @@ interface UserBodyType {
     roleCode: string,
 }
 
+interface UpdateUserInterface {
+    id: string,
+    firstName: string,
+    lastName?: string,
+}
+
 class UserRepository {
     async getAllUsers() {
         const users = await prismaClient.user.findMany({
@@ -47,6 +53,18 @@ class UserRepository {
                 id: true, firstName: true, lastName: true, email: true, role: true,
             }
         })
+        return user;
+    }
+
+    async updateUser({ id, firstName, lastName }: UpdateUserInterface) {
+        const user = await prismaClient.user.update({
+            where: { id }, data: {
+                firstName, lastName,
+            }, select: {
+                firstName: true,
+                lastName: true,
+            }
+        });
         return user;
     }
 

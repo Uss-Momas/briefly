@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import userRepository from "../repositories/UserRepository";
-import { idRequestParamSchema, userBodyRequestSchema } from "../validations/requests";
+import { idRequestParamSchema, updateUserSchema, userBodyRequestSchema } from "../validations/requests";
 import AppError from "../errors/AppError";
 
 class UserController {
@@ -40,6 +40,18 @@ class UserController {
         const newUser = await userRepository.createUser({ firstName, lastName, email, password, roleCode });
 
         return reply.status(201).send({ message: 'User created sucessfuly', user: newUser });
+    }
+
+    async updateUser(request: FastifyRequest, reply: FastifyReply) {
+        const { firstName, lastName } = updateUserSchema.parse(request.body);
+        const authenticatedUser: any = request.user;
+        const user = await userRepository.getUserById(authenticatedUser.id);
+
+        if (!user) throw new AppError(404, 'User Not found');
+
+        const updatedUser = await userRepository.updateUser({ id: user.id, firstName, lastName });
+
+        return reply.send({ message: "User updated sucessfuly", user: updatedUser });
     }
 }
 

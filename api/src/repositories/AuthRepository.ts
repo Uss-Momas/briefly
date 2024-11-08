@@ -5,7 +5,8 @@ import { comparePassword } from "../utils/hashPassword";
 import AppError from "../errors/AppError";
 
 interface SignupInterface {
-    name: string,
+    firstName: string,
+    lastName?: string,
     email: string,
     password: string,
 }
@@ -16,8 +17,8 @@ interface LoginInterface {
 }
 
 class AuthRepository {
-    async signup({ name, email, password }: SignupInterface) {
-        const user = await userRepository.createUser({ name, email, password, roleCode: Role.NORMAL });
+    async signup({ firstName, lastName, email, password }: SignupInterface) {
+        const user = await userRepository.createUser({ firstName, lastName, email, password, roleCode: Role.NORMAL });
         return user;
     }
 
