@@ -11,7 +11,7 @@ class ShortlinkController {
         const { page = 1, limit = 5 } = paginationQuerySchema.parse(request.query);
         const user: any = request.user;
         const { shortlinks, meta } = await shortlinkRepository.getAllShortlinks({ page, limit, user });
-        
+
         return reply.send({ message: 'All Shortlinks', shortlinks, meta });
     }
 
@@ -29,8 +29,8 @@ class ShortlinkController {
 
         if (!shortlink) throw new AppError(404, "Original Link Was Not Found");
 
-        await redisClient.zIncrBy('metrics', 1, shortlink.id);
-        console.log(shortlink);
+        if (redisClient.isReady)
+            await redisClient.zIncrBy('metrics', 1, shortlink.id);
 
         return reply.send({ message: 'Get shortlink', originalUrl: shortlink.originalUrl });
     }
