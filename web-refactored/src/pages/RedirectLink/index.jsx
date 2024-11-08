@@ -8,11 +8,13 @@ export default function RedirectLink() {
 
     async function getOriginalUrl() {
         try {
-            console.log("antes");
-
             const response = await axios.get(`shortlinks/code/${code}`);
-            setOriginalUrl(response.data.originalUrl);
-            console.log("depois");
+            const originalUrl = response.data.originalUrl;
+            if (originalUrl.includes("http")) {
+                setOriginalUrl(originalUrl);
+            } else {
+                setOriginalUrl(`https://${originalUrl}`);
+            }
 
         } catch (error) {
             console.log("Redirect Link Page:", error);
@@ -21,13 +23,12 @@ export default function RedirectLink() {
 
     useEffect(() => {
         getOriginalUrl();
-    }, [code]);
+    }, []);
 
     if (!originalUrl) {
         return <>Is Loading...</>;
     }
 
-    // Redirect the user to the original URL
-    window.location.replace(originalUrl);
+    window.location.href = originalUrl;
     return null;
 }

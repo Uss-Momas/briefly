@@ -29,7 +29,6 @@ export default function Home() {
 
     const handleUrlShortening = async (data) => {
         try {
-            console.log(data);
             const response = await axios.post("/shortlinks/anonimous", data);
             const { shortlink } = response.data;
             const url = await appendUrl(shortlink.code);
