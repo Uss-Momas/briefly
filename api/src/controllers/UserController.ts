@@ -31,13 +31,13 @@ class UserController {
     }
 
     async createUser(request: FastifyRequest, reply: FastifyReply) {
-        const { name, email, password, roleCode } = userBodyRequestSchema.parse(request.body);
+        const { firstName, lastName, email, password, roleCode } = userBodyRequestSchema.parse(request.body);
 
         const user = await userRepository.getUserByEmail(email);
 
         if (user) throw new AppError(409, 'This email is already in use');
 
-        const newUser = await userRepository.createUser({ name, email, password, roleCode });
+        const newUser = await userRepository.createUser({ firstName, lastName, email, password, roleCode });
 
         return reply.status(201).send({ message: 'User created sucessfuly', user: newUser });
     }

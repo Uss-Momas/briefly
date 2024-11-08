@@ -27,7 +27,8 @@ export const idRequestParamSchema = z.object({
 });
 
 export const userBodyRequestSchema = z.object({
-    name: z.string().min(3).max(255),
+    firstName: z.string().min(3).max(64),
+    lastName: z.string().min(3).max(64).optional(),
     email: z.string().email({ message: 'Email is not valid!' }),
     password: z.string().min(6),
     roleCode: z.enum(['01', '02'])
