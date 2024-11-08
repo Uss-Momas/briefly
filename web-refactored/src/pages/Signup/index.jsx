@@ -13,8 +13,6 @@ export default function Signup() {
 
     const OnSubmit = async (data) => {
         try {
-            console.log(data);
-
             const response = await axios.post("/auth/signup", data);
             navigate('/login');
         } catch (error) {
@@ -48,11 +46,20 @@ export default function Signup() {
                             <div className="flex flex-col gap-2">
                                 <div className="flex-1 relative">
                                     <Text className="absolute left-2 top-2 text-gray-500" />
-                                    <input {...register("name")}
-                                        aria-invalid={errors.name ? "true" : "false"}
-                                        className="border border-purple-600 outline-none focus:ring-2 focus:ring-purple-300 shadow-sm rounded-lg aria-[invalid=true]:border-red-500 aria-[invalid=true]:focus:ring-red-300 w-full pl-10 pr-4 py-2" type="text" name="name" placeholder="Enter your first name" />
+                                    <input {...register("firstName")}
+                                        aria-invalid={errors.firstName ? "true" : "false"}
+                                        className="border border-purple-600 outline-none focus:ring-2 focus:ring-purple-300 shadow-sm rounded-lg aria-[invalid=true]:border-red-500 aria-[invalid=true]:focus:ring-red-300 w-full pl-10 pr-4 py-2" type="text" name="firstName" placeholder="Enter your first name" />
                                 </div>
-                                <span className="text-sm text-red-400">{errors.name && errors.name.message}</span>
+                                <span className="text-sm text-red-400">{errors.firstName && errors.firstName.message}</span>
+                            </div>
+                            <div className="flex flex-col gap-2">
+                                <div className="flex-1 relative">
+                                    <Text className="absolute left-2 top-2 text-gray-500" />
+                                    <input {...register("lastName")}
+                                        aria-invalid={errors.lastName ? "true" : "false"}
+                                        className="border border-purple-600 outline-none focus:ring-2 focus:ring-purple-300 shadow-sm rounded-lg aria-[invalid=true]:border-red-500 aria-[invalid=true]:focus:ring-red-300 w-full pl-10 pr-4 py-2" type="text" name="lastName" placeholder="Enter your last name" />
+                                </div>
+                                <span className="text-sm text-red-400">{errors.lastName && errors.lastName.message}</span>
                             </div>
                             <div className="flex flex-col gap-2">
                                 <div className="relative">

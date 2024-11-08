@@ -2,7 +2,8 @@ import { z } from "zod";
 
 export const signupSchema = z.object({
     email: z.string().email({ message: "Email is not valid" }),
-    name: z.string().min(3, { message: 'Name must include at least 3 characters' }).max(64),
+    firstName: z.string().min(3, { message: 'First name must include at least 3 characters' }).max(64),
+    lastName: z.string().max(64).optional(),
     password: z.string().min(8, { message: "Password is too short" }).max(32, { message: "Password is too long" }),
     confirmPassword: z.string(),
     termsAgreement: z.boolean(),
@@ -17,4 +18,10 @@ export const loginSchema = z.object({
 const urlPattern = /^(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
 export const shortURLAnon = z.object({
     originalUrl: z.string().regex(urlPattern, { message: "Provide a valid URL" }),
+});
+
+
+export const updateUserSchema = z.object({
+    firstName: z.string().min(3, { message: 'First name must include at least 3 characters' }).max(64),
+    lastName: z.string().max(64).optional(),
 });

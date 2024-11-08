@@ -19,13 +19,22 @@ export function AuthProvider({ children }) {
         localStorage.setItem("auth", JSON.stringify(authData));
     }
 
+    function updateUser(userData) {
+        const authData = localStorage.getItem("auth");
+        const data = JSON.parse(authData);
+        data.user.firstName = userData.firstName;
+        data.user.lastName = userData.lastName;
+        setAuth(data);
+        localStorage.setItem("auth", JSON.stringify(data));
+    }
+
     function logout() {
         localStorage.removeItem("auth");
         setAuth(undefined);
     }
 
     return (
-        <AuthContext.Provider value={{ auth, isLoading, login, logout }}>
+        <AuthContext.Provider value={{ auth, isLoading, login, logout, updateUser }}>
             {children}
         </AuthContext.Provider>
     );

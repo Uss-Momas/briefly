@@ -14,7 +14,6 @@ export default function Login() {
     const { auth, login } = useAuth();
     const navigate = useNavigate();
 
-
     const onSubmit = async (data) => {
         try {
             const response = await axios.post("/auth/login", data);
