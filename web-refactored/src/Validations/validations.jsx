@@ -25,3 +25,8 @@ export const updateUserSchema = z.object({
     firstName: z.string().min(3, { message: 'First name must include at least 3 characters' }).max(64),
     lastName: z.string().max(64).optional(),
 });
+
+export const updateUserPasswordSchema = z.object({
+    password: z.string().min(8, { message: "Password is too short" }).max(32, { message: "Password is too long" }),
+    confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, { message: "Passwords do not match", path: ["confirmPassword"] });

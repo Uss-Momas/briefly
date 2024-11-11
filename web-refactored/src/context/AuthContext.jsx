@@ -33,8 +33,12 @@ export function AuthProvider({ children }) {
         setAuth(undefined);
     }
 
+    function handleUnauthorizedAccess() {
+        logout();
+    }
+
     return (
-        <AuthContext.Provider value={{ auth, isLoading, login, logout, updateUser }}>
+        <AuthContext.Provider value={{ auth, isLoading, login, logout, updateUser, handleUnauthorizedAccess }}>
             {children}
         </AuthContext.Provider>
     );
