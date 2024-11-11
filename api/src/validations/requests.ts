@@ -4,7 +4,7 @@ const urlPattern = /^(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z
 
 export const shortlinkRequestBodySchema = z.object({
     originalUrl: z.string().regex(urlPattern, { message: "Provide a valid URL" }),
-    code: z.string().min(3, { message: "Must be 3 or more characters long" }).max(10, { message: "Must be 10 or less characters long" }).optional(),
+    code: z.union([z.string().min(3, { message: "Must be 3 or more characters long" }).max(10, { message: "Must be 10 or less characters long" }), z.literal("")]).optional(),
 });
 
 export const shortlinkRequestParamSchema = z.object({
