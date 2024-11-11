@@ -68,6 +68,19 @@ class UserRepository {
         return user;
     }
 
+    async updateUserPassword(userId: string, newPassword: string) {
+        const hashedPwd = hashPassword(newPassword);
+        const user = await prismaClient.user.update({
+            where: { id: userId },
+            data: {
+                password: hashedPwd,
+            }, select: {
+                firstName: true,
+                lastName: true,
+            },
+        });
+        return user;
+    }
 }
 
 const userRepository = new UserRepository();

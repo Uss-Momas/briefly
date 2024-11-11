@@ -30,7 +30,7 @@ export const userBodyRequestSchema = z.object({
     firstName: z.string().min(3).max(64),
     lastName: z.string().max(64).optional(),
     email: z.string().email({ message: 'Email is not valid!' }),
-    password: z.string().min(6),
+    password: z.string().min(8),
     roleCode: z.enum(['01', '02'])
 });
 
@@ -38,6 +38,11 @@ export const updateUserSchema = z.object({
     firstName: z.string().min(3, { message: "First name must include at least 3 characters" }).max(64),
     lastName: z.string().max(64).optional(),
 });
+
+export const updateUserPasswordSchema = z.object({
+    password: z.string().min(8, { message: "Password is too short" }).max(32, { message: "Password is too long" }),
+    confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, { message: "Passwords do not match", path: ["confirmPassword"] });
 
 // Auth validations
 export const authSignupRequestBodySchema = z.object({

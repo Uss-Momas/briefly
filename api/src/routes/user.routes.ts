@@ -7,4 +7,5 @@ export default async function userRoutes(fastify: FastifyInstance) {
     fastify.delete('/:id', { onRequest: [fastify.authenticate] }, async (request, reply) => userController.deleteUser(request, reply));
     fastify.post('/', { onRequest: [fastify.authenticate] }, async (request, reply) => userController.createUser(request, reply));
     fastify.put('/:id', { onRequest: [fastify.authenticate] }, async (request, reply) => userController.updateUser(request, reply) );
+    fastify.patch('/:id', { onRequest: [fastify.authenticate] }, async (request, reply) => userController.updateUserPassword(request, reply) );
 }
