@@ -11,13 +11,13 @@ export default function Login() {
         resolver: zodResolver(loginSchema),
     });
 
-    const { auth, login } = useAuth();
+    const { login } = useAuth();
     const navigate = useNavigate();
 
     const onSubmit = async (data) => {
         try {
             const response = await axios.post("/auth/login", data);
-            const { message, token, user } = response.data;
+            const { token, user } = response.data;
             login({ token, user });
             navigate("/auth/dashboard");
         } catch (error) {

@@ -13,7 +13,7 @@ export default function Signup() {
 
     const OnSubmit = async (data) => {
         try {
-            const response = await axios.post("/auth/signup", data);
+            await axios.post("/auth/signup", data);
             navigate('/login');
         } catch (error) {
             const { errors = [], message } = error.response.data;
