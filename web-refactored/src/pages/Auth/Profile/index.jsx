@@ -1,34 +1,19 @@
-import { LockIcon, Mail, User } from "lucide-react"
 import { useAuth } from "../../../hooks/useAuth";
-import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { updateUserSchema } from "../../../Validations/validations";
-import { zodResolver } from "@hookform/resolvers/zod";
 import Footer from "../../../components/Footer";
-import UserHeader from "../../../components/UserHeader";
-import axios from "../../../api/axios";
-import { ProfileTab } from "../../../components/ProfileTab";
 import PasswordTab from "../../../components/PasswordTab";
+import ProfileTab from "../../../components/ProfileTab";
+import UserHeader from "../../../components/UserHeader";
 
 export default function Profile() {
     const [isProfileTab, setIsProfileTab] = useState(true);
-    const { auth, logout, updateUser, handleUnauthorizedAccess } = useAuth();
-    const { user, token } = auth;
-    const { formState: { errors }, handleSubmit, register, setError, clearErrors } = useForm({
-        defaultValues: {
-            "firstName": user.firstName,
-            "lastName": user.lastName,
-            "password": "",
-            // "confirmPassword"
-        },
-        resolver: zodResolver(updateUserSchema)
-    });
+    const { logout } = useAuth();
 
-    const handleProfileTab = (event) => {
+    const handleProfileTab = () => {
         setIsProfileTab(true);
     }
 
-    const handlePasswordTab = (event) => {
+    const handlePasswordTab = () => {
         setIsProfileTab(false);
     }
 

@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "../../api/axios";
 
-export function ProfileTab() {
+export default function ProfileTab() {
     const { auth, updateUser, handleUnauthorizedAccess } = useAuth();
     const { user, token } = auth;
     const { formState: { errors }, handleSubmit, register, setError, clearErrors } = useForm({
