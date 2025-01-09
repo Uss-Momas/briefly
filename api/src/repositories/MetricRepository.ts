@@ -22,6 +22,14 @@ class MetricRepository {
         }
         return 0;
     }
+
+    async generalStats() {
+        return { totalLinks: 0, totalClicks: 0, monthClicks: 0 };
+    }
+
+    async mostClickedLinks() {
+        return [];
+    }
 }
 
 const metricRepository = new MetricRepository();
