@@ -1,7 +1,7 @@
 import { AlignJustify, ArrowRight, ChartNoAxesColumn, Link2, Linkedin, LinkedinIcon, LinkIcon, LockIcon, LucideLink, Mail, MessageCircle, Twitter, X } from "lucide-react";
 import { copyToClipboard } from "../../utils/utils";
 import { Link } from "react-router-dom";
-import { shortURLAnon } from "../../Validations/validations";
+import { shortURLSchema } from "../../Validations/validations";
 import { useAuth } from '../../hooks/useAuth';
 import { useForm } from "react-hook-form";
 import { useState } from "react";
@@ -17,7 +17,7 @@ export default function Home() {
     const [shortUrl, setShortUrl] = useState(undefined);
     const [isCopied, setIsCopied] = useState(false);
     const { formState: { errors }, handleSubmit, register, setError, clearErrors } = useForm({
-        resolver: zodResolver(shortURLAnon),
+        resolver: zodResolver(shortURLSchema),
     });
 
     if (isLoading) return <>Loading....</>;

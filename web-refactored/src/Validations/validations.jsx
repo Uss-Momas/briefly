@@ -16,10 +16,10 @@ export const loginSchema = z.object({
 });
 
 const urlPattern = /^(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
-export const shortURLAnon = z.object({
+export const shortURLSchema = z.object({
     originalUrl: z.string().regex(urlPattern, { message: "Provide a valid URL" }),
+    code: z.union([z.string().min(3, { message: "Must be 3 or more characters long" }).max(10, { message: "Must be 10 or less characters long" }), z.literal("")]).optional(),
 });
-
 
 export const updateUserSchema = z.object({
     firstName: z.string().min(3, { message: 'First name must include at least 3 characters' }).max(64),
