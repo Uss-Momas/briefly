@@ -1,9 +1,31 @@
 import { ChevronDown, Eye, LinkIcon } from "lucide-react";
+import { getAllProtectedData } from "../../../utils/utils";
+import { useAuth } from "../../../hooks/useAuth";
+import { useEffect, useState } from "react";
+import AnalyticsCard from "../../../components/AnalyticsCard";
 import Footer from "../../../components/Footer";
 import UserHeader from "../../../components/UserHeader";
-import AnalyticsCard from "../../../components/AnalyticsCard";
 
 export default function Analytics() {
+    const { auth } = useAuth();
+    const [generalData, setGeneralData] = useState({});
+    const [mostClicked, setMostClicked] = useState([]);
+
+    const loadData = async () => {
+        try {
+            const { statistics } = await getAllProtectedData('/metrics/general-stats', auth.token);
+            const data = await getAllProtectedData('/metrics/most-clicked', auth.token);
+            console.log(data);
+            setGeneralData(statistics);
+        } catch (error) {
+            console.log('ANALYTCS PAGE ERROR', error);
+        }
+    }
+
+    useEffect(() => {
+        loadData();
+    }, []);
+
     return (
         <div className="min-h-dvh bg-gradient-to-r from-zircon-50 via-zircon-100 to-zircon-50">
             <UserHeader />
@@ -12,9 +34,9 @@ export default function Analytics() {
                     <div className="flex flex-col gap-4">
                         <h1 className="text-2xl text-gray-700 font-semibold">Your Links <span className="text-purple-600">Statistics</span></h1>
                         <div className="grid gap-4 w-full sm:grid-cols-3">
-                            <AnalyticsCard icon={<LinkIcon className="w-5 h-5" />} title="Total Links" value="24" />
-                            <AnalyticsCard icon={<Eye className="w-5 h-5" />} title="Total Clicks" value="1,234" />
-                            <AnalyticsCard icon={<ChevronDown className="w-5 h-5" />} title="This Month" value="256" />
+                            <AnalyticsCard icon={<LinkIcon className="w-5 h-5" />} title="Total Links" value={generalData.totalLinks} />
+                            <AnalyticsCard icon={<Eye className="w-5 h-5" />} title="Total Clicks" value={generalData.totalClicks} />
+                            <AnalyticsCard icon={<ChevronDown className="w-5 h-5" />} title="This Month" value={generalData.monthClicks} />
                         </div>
                     </div>
                 </section>
@@ -25,22 +47,34 @@ export default function Analytics() {
                         <div className="bg-white border rounded-lg overflow-x-auto shadow-md">
                             <table className="divide-y w-full min-w-[600px] divide-gray-200">
                                 <thead className="bg-gray-100 rounded-lg">
-                                    <th className="text-left text-sm text-gray-600 font-medium py-3 px-4">Original Link</th>
-                                    <th className="text-left text-sm text-gray-600 font-medium py-3 px-4">Short Link</th>
-                                    <th className="text-center text-sm text-gray-600 font-medium py-3 px-4">Clicks</th>
+                                    <tr>
+                                        <th className="text-left text-sm text-gray-600 font-medium py-3 px-4">Original Link</th>
+                                        <th className="text-left text-sm text-gray-600 font-medium py-3 px-4">Short Link</th>
+                                        <th className="text-center text-sm text-gray-600 font-medium py-3 px-4">Clicks</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td className="text-left text-sm truncate max-w-[300px] px-4 py-3">
-                                            <span>https://really-long-original-url.com/with/very/long/path/example</span>
-                                        </td>
-                                        <td className="text-left text-sm text-purple-600 px-4 py-3">
-                                            <span>http://short.ly/AsdeEA</span>
-                                        </td>
-                                        <td className="text-center text-sm px-4 py-3">
-                                            10000
-                                        </td>
-                                    </tr>
+                                    {
+                                        mostClicked.length === 0 ? <tr>
+                                            <td colSpan={3} className="text-center text-gray-400 p-4 text-sm">No data</td>
+                                        </tr> : (
+                                            mostClicked.map((item, key) => {
+                                                return (
+                                                    <tr>
+                                                        <td className="text-left text-sm truncate max-w-[300px] px-4 py-3">
+                                                            <span>https://really-long-original-url.com/with/very/long/path/example</span>
+                                                        </td>
+                                                        <td className="text-left text-sm text-purple-600 px-4 py-3">
+                                                            <span>http://short.ly/AsdeEA</span>
+                                                        </td>
+                                                        <td className="text-center text-sm px-4 py-3">
+                                                            10000
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })
+                                        )
+                                    }
                                 </tbody>
                             </table>
                         </div>
