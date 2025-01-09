@@ -14,7 +14,8 @@
     "seed:sqlite": "dotenv -e .env.local -- npx prisma db seed",
     "build": "tsc -p tsconfig.json",
     "dev:postgres": "dotenv -e .env.dev -- tsx watch ./src/server.ts",
-    "dev:sqlite": "dotenv -e .env.local -- tsx watch ./src/server.ts"
+    "dev:sqlite": "dotenv -e .env.local -- tsx watch ./src/server.ts",
+    "dev:production": "tsx watch ./src/server.ts"
   },
   "keywords": [],
   "author": "",
@@ -35,6 +36,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.5.4",
+    "dotenv-cli": "^8.0.0",
     "prisma": "^5.19.1",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.0",
