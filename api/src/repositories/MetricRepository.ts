@@ -2,19 +2,25 @@ import { redisClient } from "../utils/redisClient";
 
 class MetricRepository {
     async clicksByShortlinkMetrics() {
-        const result = await redisClient.zRangeByScoreWithScores('metrics', 0, 50);
-        const metrics = result.sort((a, b) => b.score - a.score).map((item) => {
-            return {
-                shortLink: item.value,
-                clicks: item.score,
-            }
-        });
-        return metrics;
+        if (redisClient.isReady) {
+            const result = await redisClient.zRangeByScoreWithScores('metrics', 0, 50);
+            const metrics = result.sort((a, b) => b.score - a.score).map((item) => {
+                return {
+                    shortLink: item.value,
+                    clicks: item.score,
+                }
+            });
+            return metrics;
+        }
+        return [];
     }
 
-    async clicksByShortlink(id: string){
-        const result = await redisClient.zScore('metrics', id);
-        return result ? result : 0;
+    async clicksByShortlink(id: string) {
+        if (redisClient.isReady) {
+            const result = await redisClient.zScore('metrics', id);
+            return result ? result : 0;
+        }
+        return 0;
     }
 }
 
