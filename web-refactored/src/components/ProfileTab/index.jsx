@@ -55,7 +55,7 @@ export default function ProfileTab() {
             </div>}
             {errors.root && <div className="rounded-md bg-red-50 p-4">
                 <div className="flex items-center justify-center gap-2 sm:gap-6">
-                    <CheckCircle2 fill="#f87171" className="text-white size-5 sm:size-6" />
+                    <CircleX fill="#f87171" className="text-white size-5 sm:size-6" />
                     <span className="text-sm text-red-800 font-medium">Some error occured!</span>
                 </div>
             </div>}
