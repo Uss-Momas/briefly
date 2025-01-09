@@ -1,4 +1,4 @@
-export default async function appendUrl(code) {
+export default function appendUrl(code) {
     const url = `${window.location.origin}/${code}`;
     return url;
 }
