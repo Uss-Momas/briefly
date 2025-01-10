@@ -12,6 +12,16 @@ class MetricController {
         const clicks = await metricRepository.clicksByShortlink(shortlinkId);
         return reply.send({ message: 'Clicks ', clicks });
     }
+
+    async getGeneralStats(request: FastifyRequest, reply: FastifyReply) {
+        const stats = await metricRepository.generalStats();
+        return reply.send({ message: 'General statistics', statistics: stats });
+    }
+
+    async getMostClickedLinks(request: FastifyRequest, reply: FastifyReply) {
+        const data = await metricRepository.mostClickedLinks();
+        return reply.send({ message: 'Most clicked links', links: data });
+    }
 }
 
 const metricController = new MetricController();

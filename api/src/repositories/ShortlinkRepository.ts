@@ -44,7 +44,7 @@ class ShortlinkRepository {
                     id: shortlink.id,
                     createdAt: shortlink.createdAt,
                     userId: shortlink.userId,
-                    clicks
+                    clicks: clicks ? clicks : 0,
                 };
             })
         );

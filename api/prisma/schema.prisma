@@ -29,7 +29,8 @@ model ShortLink {
 model User {
   id        String   @id @default(uuid())
   roleCode  String   @map("role_code")
-  name      String
+  firstName String
+  lastName  String?
   email     String   @unique
   password  String
   avatarUrl String?  @map("avatar_url")

@@ -7,12 +7,12 @@ import { comparePassword } from "../utils/hashPassword";
 
 class AuthController {
     async signup(request: FastifyRequest, reply: FastifyReply) {
-        const { name, email, password } = authSignupRequestBodySchema.parse(request.body);
+        const { firstName, lastName, email, password } = authSignupRequestBodySchema.parse(request.body);
         const user = await userRepository.getUserByEmail(email);
 
         if (user) throw new AppError(409, 'This email is already in use');
 
-        const newUser = await authRepository.signup({ name, email, password });
+        const newUser = await authRepository.signup({ firstName, lastName, email, password });
         return reply.status(201).send({ message: 'Signup Successfully', user: newUser });
     }
 
@@ -24,17 +24,21 @@ class AuthController {
         const payload = {
             id: user.id,
             email: user.email,
-            name: user.name,
+            firstName: user.firstName,
+            lastName: user.lastName,
         }
 
         const token = request.jwt.sign(payload,);
 
-        return reply.send({ message: 'Login Successfully', token, user :{
-            id: user.id,
-            email: user.email,
-            role: user.role,
-            name: user.name,
-        } });
+        return reply.send({
+            message: 'Login Successfully', token, user: {
+                id: user.id,
+                email: user.email,
+                role: user.role,
+                firstName: user.firstName,
+                lastName: user.lastName,
+            }
+        });
     }
 }
 
