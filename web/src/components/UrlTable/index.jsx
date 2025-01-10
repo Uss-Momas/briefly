@@ -5,7 +5,7 @@ import { useAuth } from "../../hooks/useAuth";
 import appendUrl from "../../utils/appendUrl";
 import ConfirmDeletePopup from "../ConfirmDeletePopup";
 
-export default function UrlTable() {
+export default function UrlTable({ refreshTrigger }) {
     const { auth } = useAuth();
     const [data, setData] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -50,7 +50,7 @@ export default function UrlTable() {
 
     useEffect(() => {
         loadData();
-    }, [currentPage]);
+    }, [currentPage, refreshTrigger]);
 
     return (
         <>
@@ -68,35 +68,39 @@ export default function UrlTable() {
                         </thead>
                         <tbody className="divide-y divide-gray-200 bg-white">
                             {
-                                data.map((item, key) => {
-                                    const url = appendUrl(item.code);
-                                    const createdAt = new Intl.DateTimeFormat('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(item.createdAt));
+                                data.length === 0 ?
+                                    <tr>
+                                        <td colSpan={5} className="text-center text-gray-400 p-4 text-sm">No data</td>
+                                    </tr> :
+                                    (data.map((item, key) => {
+                                        const url = appendUrl(item.code);
+                                        const createdAt = new Intl.DateTimeFormat('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(item.createdAt));
 
-                                    return (<tr key={key} className="hover:bg-gray-50">
-                                        <td className="px-4 py-3 text-sm truncate max-w-[300px] transition-transform delay-75" title={item.originalUrl}>
-                                            {item.originalUrl}
-                                        </td>
-                                        <td className="px-4 py-3 text-sm">
-                                            <a target="_blank" href={url} className="text-purple-600 hover:underline">
-                                                {url}
-                                            </a>
-                                        </td>
-                                        <td className="px-4 py-3 text-sm text-gray-500 min-w-32">
-                                            {createdAt}
-                                        </td>
-                                        <td className="px-4 py-3 text-sm text-center">{item.clicks}</td>
-                                        <td className="px-4 py-3 text-sm">
-                                            <div className="flex justify-end gap-2">
-                                                <a target="_blank" href={url} className="hover:bg-gray-100 rounded-lg p-2" title="Open original link" aria-label={`Open link to ${url}`}>
-                                                    <ExternalLink className="w-4 h-4 text-gray-500" />
+                                        return (<tr key={key} className="hover:bg-gray-50">
+                                            <td className="px-4 py-3 text-sm truncate max-w-[300px] transition-transform delay-75" title={item.originalUrl}>
+                                                {item.originalUrl}
+                                            </td>
+                                            <td className="px-4 py-3 text-sm">
+                                                <a target="_blank" href={url} className="text-purple-600 hover:underline">
+                                                    {url}
                                                 </a>
-                                                <button onClick={() => openDeleteModal(item.id)} className="hover:bg-red-50 rounded-lg p-2" title="Delete link">
-                                                    <Trash2 className="w-4 h-4 text-red-500" />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>);
-                                })
+                                            </td>
+                                            <td className="px-4 py-3 text-sm text-gray-500 min-w-32">
+                                                {createdAt}
+                                            </td>
+                                            <td className="px-4 py-3 text-sm text-center">{item.clicks}</td>
+                                            <td className="px-4 py-3 text-sm">
+                                                <div className="flex justify-end gap-2">
+                                                    <a target="_blank" href={url} className="hover:bg-gray-100 rounded-lg p-2" title="Open original link" aria-label={`Open link to ${url}`}>
+                                                        <ExternalLink className="w-4 h-4 text-gray-500" />
+                                                    </a>
+                                                    <button onClick={() => openDeleteModal(item.id)} className="hover:bg-red-50 rounded-lg p-2" title="Delete link">
+                                                        <Trash2 className="w-4 h-4 text-red-500" />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>);
+                                    }))
                             }
                         </tbody>
                     </table>

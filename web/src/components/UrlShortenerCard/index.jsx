@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import appendUrl from "../../utils/appendUrl";
 import axios from "../../api/axios";
 
-export default function UrlShortenerCard({ className }) {
+export default function UrlShortenerCard({ className, onShortlinkCreated }) {
     const { clearErrors, formState: { errors }, handleSubmit, register, setError, reset } = useForm(
         { resolver: zodResolver(shortURLSchema) }
     );
@@ -27,9 +27,10 @@ export default function UrlShortenerCard({ className }) {
             );
             const { shortlink } = response.data;
             console.log(response.data);
-            const url = await appendUrl(shortlink.code);
+            const url = appendUrl(shortlink.code);
             setShortUrl(url);
             reset();
+            if (onShortlinkCreated) onShortlinkCreated(); // Notify the parent
         } catch (error) {
             console.log("Dashboard Page errors: ", error);
             if (error.response) {
