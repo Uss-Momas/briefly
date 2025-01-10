@@ -1,7 +1,7 @@
 import axiosHandler from 'axios';
 
 const axios = axiosHandler.create({
-    baseURL: 'http://localhost:3333/api/v1',
+    baseURL: import.meta.env.VITE_API_URL,
     headers: {
         Accept: 'application/json',
     }
