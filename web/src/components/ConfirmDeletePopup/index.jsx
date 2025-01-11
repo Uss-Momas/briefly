@@ -1,6 +1,6 @@
 import { TriangleAlert } from "lucide-react";
 
-export default function ConfirmDeletePopup({ isOpen, onClose, onConfirm }) {
+export default function ConfirmDeletePopup({ isOpen, onClose, onConfirm, text }) {
     if (!isOpen) return null;
 
     const handleOverlayClick = (e) => {
@@ -23,7 +23,7 @@ export default function ConfirmDeletePopup({ isOpen, onClose, onConfirm }) {
                         </div>
                     </div>
                     <div className="text-sm text-gray-600 mb-6">
-                        <p>Are you sure you want to delete this link?</p>
+                        <p>{text}</p>
                         <p>This action cannot be undone.</p>
                     </div>
                 </div>

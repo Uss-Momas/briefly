@@ -5,7 +5,7 @@ import { useAuth } from "../../hooks/useAuth";
 import appendUrl from "../../utils/appendUrl";
 import ConfirmDeletePopup from "../ConfirmDeletePopup";
 
-export default function UrlTable({ refreshTrigger }) {
+export default function AdminUrlTable({ refreshTrigger }) {
     const { auth } = useAuth();
     const [data, setData] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,12 +16,12 @@ export default function UrlTable({ refreshTrigger }) {
 
     const loadData = async () => {
         try {
-            const { meta, shortlinks } = await getAllProtectedData(`/shortlinks?page=${currentPage}`, auth.token);
+            const { meta, shortlinks } = await getAllProtectedData(`/shortlinks?page=${currentPage}&limit=10`, auth.token);
             setData(shortlinks);
             setPrevPage(meta.prevPage);
             setNextPage(meta.nextPage);
         } catch (error) {
-            console.log('URL TABLE COMPONENT ERROR:', error);
+            console.log('ADMIN URL TABLE COMPONENT ERROR:', error);
         }
     }
 
@@ -132,8 +132,7 @@ export default function UrlTable({ refreshTrigger }) {
             <ConfirmDeletePopup
                 isOpen={isModalOpen}
                 onClose={closeDeleteModal}
-                onConfirm={handleDelete}
-                text={"Are you sure you want to delete this link?"} />
+                onConfirm={handleDelete} />
         </>
     );
 }
