@@ -1,3 +1,4 @@
+import { User } from "@prisma/client";
 import hashPassword from "../utils/hashPassword";
 import prismaClient from "../utils/prismaClient";
 
@@ -15,18 +16,41 @@ interface UpdateUserInterface {
     lastName?: string,
 }
 
+interface PageType {
+    page: number;
+    limit: number;
+}
+
 class UserRepository {
-    async getAllUsers() {
+    async getAllUsers({ page, limit, }: PageType) {
+        const skip = (page - 1) * limit;
+        const totalLinks = await prismaClient.user.count();
+        const totalPages = Math.ceil(totalLinks / limit);
+        const hasPrevPage = page > 1;
+        const hasNextPage = page < totalPages;
         const users = await prismaClient.user.findMany({
+            skip, take: limit,
+            orderBy: {
+                createdAt: "desc",
+            },
             select: {
                 id: true,
                 email: true,
                 firstName: true,
                 lastName: true,
+                createdAt: true,
                 role: true,
             }
         })
-        return users;
+        return {
+            users, meta: {
+                totalItems: totalLinks,
+                totalPages,
+                currentPage: page,
+                prevPage: hasPrevPage ? page - 1 : null,
+                nextPage: hasNextPage ? page + 1 : null,
+            }
+        };
     }
 
     async getUserById(id: string) {

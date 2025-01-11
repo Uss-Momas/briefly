@@ -1,16 +1,27 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import userRepository from "../repositories/UserRepository";
-import { idRequestParamSchema, updateUserPasswordSchema, updateUserSchema, userBodyRequestSchema } from "../validations/requests";
+import { idRequestParamSchema, paginationQuerySchema, updateUserPasswordSchema, updateUserSchema, userBodyRequestSchema } from "../validations/requests";
 import AppError from "../errors/AppError";
 
 class UserController {
     async getAllUsers(request: FastifyRequest, reply: FastifyReply) {
-        const users = await userRepository.getAllUsers();
-        return reply.send({ message: 'List of users', users });
+        const { page = 1, limit = 5 } = paginationQuerySchema.parse(request.query);
+        const authenticatedUser: any = request.user;
+
+        if (authenticatedUser.role.designation !== 'admin') {
+            throw new AppError(403, 'You are not allowed to access this resource');
+        }
+        const { users, meta } = await userRepository.getAllUsers({ page, limit, });
+        return reply.send({ message: 'List of users', users, meta });
     }
 
     async getUser(request: FastifyRequest, reply: FastifyReply) {
         const { id } = idRequestParamSchema.parse(request.params);
+        const authenticatedUser: any = request.user;
+
+        if (authenticatedUser.id !== id && authenticatedUser.role.designation !== 'admin') {
+            throw new AppError(403, 'You are not allowed to access this resource');
+        }
 
         const user = await userRepository.getUserById(id);
 
@@ -20,6 +31,11 @@ class UserController {
     }
     async deleteUser(request: FastifyRequest, reply: FastifyReply) {
         const { id } = idRequestParamSchema.parse(request.params);
+        const authenticatedUser: any = request.user;
+
+        if (authenticatedUser.id !== id && authenticatedUser.role.designation !== 'admin') {
+            throw new AppError(403, 'You are not allowed to access this resource');
+        }
 
         const user = await userRepository.getUserById(id);
 

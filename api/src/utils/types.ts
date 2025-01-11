@@ -13,7 +13,9 @@ declare module 'fastify' {
 type UserPayload = {
     id: string
     email: string
-    name: string
+    firstName: string
+    lastName: string
+    role: object
 }
 
 declare module '@fastify/jwt' {
