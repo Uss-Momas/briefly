@@ -14,7 +14,8 @@ class MetricController {
     }
 
     async getGeneralStats(request: FastifyRequest, reply: FastifyReply) {
-        const stats = await metricRepository.generalStats();
+        const authenticatedUser: any = request.user;
+        const stats = await metricRepository.generalStats(authenticatedUser);
         return reply.send({ message: 'General statistics', statistics: stats });
     }
 
