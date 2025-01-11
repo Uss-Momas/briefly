@@ -26,7 +26,6 @@ export default function UrlShortenerCard({ className, onShortlinkCreated }) {
                 { headers: { Authorization: `Bearer ${token}` } },
             );
             const { shortlink } = response.data;
-            console.log(response.data);
             const url = appendUrl(shortlink.code);
             setShortUrl(url);
             reset();

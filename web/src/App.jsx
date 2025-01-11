@@ -12,6 +12,7 @@ import Signup from "./pages/Signup";
 import Users from './pages/Admin/Users';
 import NoAccessPage from './pages/NoAccessPage';
 import HandleRole from './components/HandleRole';
+import AllLinks from './pages/Admin/Links';
 
 const ADMIN = "01";
 const NORMAL = "02";
@@ -59,6 +60,9 @@ const router = createBrowserRouter([
       }, {
         path: 'users',
         element: <Users />
+      }, {
+        path: 'links',
+        element: <AllLinks />
       }
     ]
   },

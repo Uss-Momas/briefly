@@ -30,7 +30,7 @@ export default function UserHeader() {
 
     return (
         <header className="relative w-full h-16">
-            <nav className="fixed w-full bg-white shadow-md">
+            <nav className="fixed w-full h-16 bg-white shadow-md z-50">
                 <div className="flex items-center justify-between p-2 sm:px-16 sm:py-4">
                     <Link to={"/"}>
                         <span className="text-purple-700 text-2xl font-bold" >Briefly</span>
