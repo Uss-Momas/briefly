@@ -55,9 +55,6 @@ class MetricRepository {
 
 
     async generalStats(user: any) {
-        if (user.role.designation === 'admin') {
-            return this.adminGeneralStats();
-        }
         const totalLinks = await prismaClient.shortLink.count({ where: { userId: user.id } });
         const links = await prismaClient.shortLink.findMany({ where: { userId: user.id } });
         const linksOfMonth = links.filter((item) => {

@@ -25,55 +25,22 @@ interface PageType {
 class ShortlinkRepository {
     async getAllShortlinks({ page, limit, user }: PageType) {
         const skip = (page - 1) * limit;
-        console.log(user);
-        const totalLinks = await (user.role.designation === 'normal' ? prismaClient.shortLink.count({ where: { userId: user.id } }) : prismaClient.shortLink.count());
+        const totalLinks = await prismaClient.shortLink.count({ where: { userId: user.id } });
         const totalPages = Math.ceil(totalLinks / limit);
         const hasPrevPage = page > 1;
         const hasNextPage = page < totalPages;
         let shortlinks: ShortLink[] = [];
 
-        if (user.role.designation === 'normal') {
-            shortlinks = await prismaClient.shortLink.findMany({
-                skip, take: limit,
-                orderBy: {
-                    createdAt: "desc",
-                },
-                where: {
-                    userId: user.id,
-                }, select: {
-                    code: true,
-                    createdAt: true,
-                    id: true,
-                    originalUrl: true,
-                    userId: true,
-                    user: {
-                        select: {
-                            email: true,
-                        },
-                    },
-                    updatedAt: true,
-                }
-            });
-        } else {
-            shortlinks = await prismaClient.shortLink.findMany({
-                skip, take: limit,
-                orderBy: {
-                    createdAt: "desc",
-                }, select: {
-                    code: true,
-                    createdAt: true,
-                    id: true,
-                    originalUrl: true,
-                    userId: true,
-                    user: {
-                        select: {
-                            email: true,
-                        },
-                    },
-                    updatedAt: true,
-                }
-            });
-        }
+        shortlinks = await prismaClient.shortLink.findMany({
+            skip, take: limit,
+            orderBy: {
+                createdAt: "desc",
+            },
+            where: {
+                userId: user.id,
+            }
+        });
+
         const shortlinksWithClicks = await Promise.all(
             shortlinks.map(async (shortlink: any) => {
                 const clicks = await metricRepository.clicksByShortlink(shortlink.id);
@@ -83,7 +50,6 @@ class ShortlinkRepository {
                     id: shortlink.id,
                     createdAt: shortlink.createdAt,
                     userId: shortlink.userId,
-                    user: shortlink.user ? shortlink.user : { email: 'anonimous' },
                     clicks: clicks ? clicks : 0,
                 };
             })

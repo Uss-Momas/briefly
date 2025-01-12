@@ -4,6 +4,7 @@ import userRoutes from "./user.routes";
 import authRoutes from "./auth.routes";
 import handleJwtAuthPlugin from "../plugins/handleJwtAuthPlugin";
 import metricsRoutes from "./metrics.routes";
+import adminRoutes from "./admin.routes";
 
 export default async function routes(fastify: FastifyInstance) {
     fastify.get('/status', (request, reply) => {
@@ -16,4 +17,5 @@ export default async function routes(fastify: FastifyInstance) {
     fastify.register(userRoutes, { prefix: 'users' });
     fastify.register(authRoutes, { prefix: 'auth' });
     fastify.register(metricsRoutes, { prefix: 'metrics' });
+    fastify.register(adminRoutes, { prefix: '/admin' });
 }
