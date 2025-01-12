@@ -19,7 +19,7 @@ export default function AdminUrlTable({ refreshTrigger }) {
     const loadData = async () => {
         try {
             setIsLoading(true);
-            const { meta, shortlinks } = await getAllProtectedData(`/shortlinks?page=${currentPage}&limit=5`, auth.token);
+            const { meta, shortlinks } = await getAllProtectedData(`/admin/shortlinks?page=${currentPage}&limit=5`, auth.token);
             setData(shortlinks);
             setPrevPage(meta.prevPage);
             setNextPage(meta.nextPage);

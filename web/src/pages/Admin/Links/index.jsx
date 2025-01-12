@@ -9,14 +9,14 @@ import { useAuth } from "../../../hooks/useAuth";
 
 export default function AllLinks() {
     const { auth } = useAuth();
-    const [generalData, setGeneralData] = useState({});
+    const [generalData, setGeneralData] = useState({ totalLinks: 0, totalClicks: 0, monthClicks: 0 });
     const [refreshData, setRefreshData] = useState(false);
 
     const triggerRefresh = () => setRefreshData((prev) => !prev);
 
     const loadData = async () => {
         try {
-            const { statistics } = await getAllProtectedData('/metrics/general-stats', auth.token);
+            const { statistics } = await getAllProtectedData('/admin/metrics/general-stats', auth.token);
             setGeneralData(statistics);
         } catch (error) {
             console.log('all links page error:', error);
