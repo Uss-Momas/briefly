@@ -78,6 +78,11 @@ class AdminRepository {
         const data = await metricRepository.adminGeneralStats();
         return data;
     }
+
+    async getMostClickedLinks() {
+        const data = await metricRepository.adminMostClickedLinks();
+        return data;
+    }
 }
 
 const adminRepository = new AdminRepository();

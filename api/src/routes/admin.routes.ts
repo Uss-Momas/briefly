@@ -14,4 +14,6 @@ export default async function adminRoutes(fastify: FastifyInstance) {
         onRequest: [fastify.authenticate],
     }, async (request: FastifyRequest, reply: FastifyReply) => adminController.getAllShortlinks(request, reply));
     fastify.get('/metrics/general-stats', { onRequest: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => adminController.getGeneralStats(request, reply));
+
+    fastify.get('/metrics/most-clicked', { onRequest: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => adminController.getMostClickedLinks(request, reply));
 }

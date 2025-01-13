@@ -16,6 +16,11 @@ class AdminController {
         const stats = await adminRepository.getGeneralStats();
         return reply.send({ message: 'General statistics', statistics: stats });
     }
+
+    async getMostClickedLinks(request: FastifyRequest, reply: FastifyReply) {
+        const shortlinks = await adminRepository.getMostClickedLinks();
+        return reply.send({ message: 'Top 10 most clicked items', shortlinks })
+    }
 }
 
 const adminController = new AdminController();

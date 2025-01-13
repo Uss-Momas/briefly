@@ -83,9 +83,36 @@ class MetricRepository {
 
         return { totalLinks: totalLinks, totalClicks, monthClicks: totalMonthClicks };
     }
-
     async mostClickedLinks() {
         return [];
+    }
+
+    async adminMostClickedLinks() {
+        const data = await redisClient.zRangeByScoreWithScores('metrics', 0, 100000000000000000.0);
+        const size = data.length;
+        const metrics = [];
+        let shortlinks = [];
+        if (size > 5) {
+            let count = 0;
+            let index = size - 1;
+            while (count < 5) {
+                metrics.push(data[index]);
+                index--;
+                count++;
+            }
+        } else {
+            for (let i = size - 1; i > 0; i--) {
+                metrics.push(data[i]);
+            }
+        }
+        shortlinks = await Promise.all(
+            metrics.map(async (item) => {
+                const shortlink = await prismaClient.shortLink.findUnique({ where: { id: item.value } });
+                return { ...shortlink, clicks: item.score };
+            })
+        );
+        shortlinks = shortlinks.filter((item) => item.id);
+        return shortlinks;
     }
 }
 

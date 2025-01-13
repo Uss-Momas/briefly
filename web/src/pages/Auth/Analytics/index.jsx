@@ -1,4 +1,4 @@
-import { ChevronDown, Eye, LinkIcon } from "lucide-react";
+import { ChevronDown, Eye, LinkIcon, RefreshCcw } from "lucide-react";
 import { getAllProtectedData } from "../../../utils/utils";
 import { useAuth } from "../../../hooks/useAuth";
 import { useEffect, useState } from "react";
@@ -10,6 +10,9 @@ export default function Analytics() {
     const { auth } = useAuth();
     const [generalData, setGeneralData] = useState({});
     const [mostClicked, setMostClicked] = useState([]);
+    const [refreshData, setRefreshData] = useState(false);
+
+    const triggerRefresh = () => setRefreshData((prev) => !prev);
 
     const loadData = async () => {
         try {
@@ -43,7 +46,14 @@ export default function Analytics() {
 
                 <section className="bg-white/30 border border-purple-800/15 backdrop-blur-md rounded-lg shadow-lg p-2 mx-auto my-6 max-w-5xl sm:p-6 lg:p-8">
                     <div className="flex flex-col gap-4 bg-white rounded-lg shadow-lg py-7 px-5">
-                        <h1 className="text-2xl text-gray-700 font-semibold">Most Clicked Links</h1>
+                        <div className="flex items-center justify-between">
+                            <h1 className="text-xl sm:text-2xl lg:text-3xl  text-gray-600 font-semibold leading-tight">
+                                Most Clicked Links
+                            </h1>
+                            <button title="load table" onClick={triggerRefresh} className="text-gray-600 hover:text-purple-800 hover:scale-105 transform transition-all hover:rotate-45 duration-300">
+                                <RefreshCcw className="size-6" />
+                            </button>
+                        </div>
                         <div className="bg-white border rounded-lg overflow-x-auto shadow-md">
                             <table className="divide-y w-full min-w-[600px] divide-gray-200">
                                 <thead className="bg-gray-100 rounded-lg">
