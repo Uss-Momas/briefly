@@ -20,7 +20,8 @@ class MetricController {
     }
 
     async getMostClickedLinks(request: FastifyRequest, reply: FastifyReply) {
-        const data = await metricRepository.mostClickedLinks();
+        const authenticatedUser: any = request.user;
+        const data = await metricRepository.mostClickedLinks(authenticatedUser.id);
         return reply.send({ message: 'Most clicked links', links: data });
     }
 }
