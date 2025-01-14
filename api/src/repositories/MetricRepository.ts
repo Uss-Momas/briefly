@@ -68,7 +68,6 @@ class MetricRepository {
         if (redisClient.isReady) {
             const clicks: any[] = await Promise.all(links.map(async (item) => {
                 const score = await redisClient.zScore('metrics', item.id);
-                console.log(score);
                 return score;
             }));
 
@@ -92,12 +91,7 @@ class MetricRepository {
             return { ...shortlink, clicks: metricObj?.score || 0 };
         });
 
-        console.log(metricsShortlinks.length);
-
-
         const sortedData = metricsShortlinks.sort((a, b) => b.clicks - a.clicks);
-        console.log(sortedData);
-        
 
         return sortedData.slice(0, 10);
     }
