@@ -4,30 +4,35 @@ import { useAuth } from "../../../hooks/useAuth";
 import { useEffect, useState } from "react";
 import AnalyticsCard from "../../../components/AnalyticsCard";
 import Footer from "../../../components/Footer";
+import MostClickLinksTable from "../../../components/MostClickLinksTable";
 import UserHeader from "../../../components/UserHeader";
 
 export default function Analytics() {
     const { auth } = useAuth();
-    const [generalData, setGeneralData] = useState({});
+    const [generalData, setGeneralData] = useState({ totalLinks: 0, totalClicks: 0, monthClicks: 0 });
     const [mostClicked, setMostClicked] = useState([]);
     const [refreshData, setRefreshData] = useState(false);
+    const [isLoadingGenData, setIsLoadingGenData] = useState(false);
 
     const triggerRefresh = () => setRefreshData((prev) => !prev);
 
     const loadData = async () => {
         try {
+            setIsLoadingGenData(true);
             const { statistics } = await getAllProtectedData('/metrics/general-stats', auth.token);
-            const data = await getAllProtectedData('/metrics/most-clicked', auth.token);
-            console.log(data);
+            const { links } = await getAllProtectedData('/metrics/most-clicked', auth.token);
             setGeneralData(statistics);
+            setMostClicked(links);
         } catch (error) {
             console.log('ANALYTCS PAGE ERROR', error);
+        } finally {
+            setIsLoadingGenData(false);
         }
     }
 
     useEffect(() => {
         loadData();
-    }, []);
+    }, [refreshData]);
 
     return (
         <div className="min-h-dvh bg-gradient-to-r from-zircon-50 via-zircon-100 to-zircon-50">
@@ -54,40 +59,7 @@ export default function Analytics() {
                                 <RefreshCcw className="size-6" />
                             </button>
                         </div>
-                        <div className="bg-white border rounded-lg overflow-x-auto shadow-md">
-                            <table className="divide-y w-full min-w-[600px] divide-gray-200">
-                                <thead className="bg-gray-100 rounded-lg">
-                                    <tr>
-                                        <th className="text-left text-sm text-gray-600 font-medium py-3 px-4">Original Link</th>
-                                        <th className="text-left text-sm text-gray-600 font-medium py-3 px-4">Short Link</th>
-                                        <th className="text-center text-sm text-gray-600 font-medium py-3 px-4">Clicks</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        mostClicked.length === 0 ? <tr>
-                                            <td colSpan={3} className="text-center text-gray-400 p-4 text-sm">No data</td>
-                                        </tr> : (
-                                            mostClicked.map((item, key) => {
-                                                return (
-                                                    <tr>
-                                                        <td className="text-left text-sm truncate max-w-[300px] px-4 py-3">
-                                                            <span>https://really-long-original-url.com/with/very/long/path/example</span>
-                                                        </td>
-                                                        <td className="text-left text-sm text-purple-600 px-4 py-3">
-                                                            <span>http://short.ly/AsdeEA</span>
-                                                        </td>
-                                                        <td className="text-center text-sm px-4 py-3">
-                                                            10000
-                                                        </td>
-                                                    </tr>
-                                                );
-                                            })
-                                        )
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
+                        <MostClickLinksTable isLoading={isLoadingGenData} mostClickedList={mostClicked} />
                     </div>
                 </section>
             </main>
